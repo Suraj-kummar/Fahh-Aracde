@@ -270,3 +270,36 @@ function showStartScreen() {
   if (shareBtn) shareBtn.style.display = "none";
   overlay.classList.remove("hidden"); renderLeaderboard(); stopMusic();
 }
+
+function showDeadScreen() {
+  state = "dead"; stopMusic();
+  const isNewBest = score > bestScore;
+  if (isNewBest) {
+    bestScore = score; localStorage.setItem("fahh_best", bestScore);
+    const name = prompt("🎉 New High Score: " + score + "!\nEnter your name (3 letters):", "AAA") || "???";
+    addToLeaderboard(name.slice(0, 3).toUpperCase(), score);
+  }
+  totalCoins += sessionCoins; localStorage.setItem("fahh_total_coins", totalCoins);
+  if (totalCoins >= 20) unlockAchievement("coin_hoarder");
+  if (score >= 10) unlockAchievement("decade");
+  if (score >= 25) unlockAchievement("speed_demon");
+  if (score >= 50) unlockAchievement("century");
+  if (gravityFlipCount >= 10) unlockAchievement("gravity_master");
+  overlayTitle.textContent = isNewBest ? "NEW BEST! 🏆" : "FAHH! 💀";
+  overlayTitle.className = isNewBest ? "new-best" : "dead";
+  overlayScore.textContent = "Score: " + score + "  🪙 " + sessionCoins + " coins";
+  overlayBest.textContent = "Best: " + bestScore;
+  overlayHint.textContent = "Press SPACE or tap to play again";
+  const defs = ACHIEVEMENT_DEFS.filter(a => [...unlockedAchievements].includes(a.id));
+  overlayAchievements.innerHTML = defs.length ? '<div class="ach-row">' + defs.map(a => '<span title="' + a.name + '">' + a.icon + '</span>').join("") + '</div>' : "";
+  const lb = getLeaderboard();
+  if (lb.length) overlayLeaderboard.innerHTML = '<div class="lb-title">🏆 Top Scores</div>' + lb.slice(0,3).map((e,i)=>'<div class="lb-row-sm">'+["🥇","🥈","🥉"][i]+" "+e.name+" — "+e.score+"</div>").join("");
+  if (shareBtn) {
+    shareBtn.style.display = "block";
+    shareBtn.onclick = () => {
+      navigator.clipboard.writeText("🐔 Flappy Fahh Score: " + score + " | Coins: " + sessionCoins + " | Best: " + bestScore)
+        .then(() => { shareBtn.textContent = "✅ Copied!"; setTimeout(() => shareBtn.textContent = "📋 Share Score", 2000); });
+    };
+  }
+  overlay.classList.remove("hidden"); triggerShake(12, 18);
+}
