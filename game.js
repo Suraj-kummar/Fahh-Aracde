@@ -26,3 +26,18 @@ const lbPanel            = document.getElementById("lbPanel");
 const lbToggleBtn        = document.getElementById("lbToggleBtn");
 const coinsEl            = document.getElementById("coinsEl");
 const comboEl            = document.getElementById("comboEl");
+
+// ── Audio core ─────────────────────────────────────────────
+const audioCtx  = new (window.AudioContext || window.webkitAudioContext)();
+const fahhAudio = new Audio("fahh.mp3");
+fahhAudio.volume = 0.85;
+fahhAudio.load();
+
+function playFahh(rate = 1.0) {
+  try {
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    const clone = fahhAudio.cloneNode();
+    clone.volume = 0.75; clone.playbackRate = rate;
+    clone.play().catch(() => {});
+  } catch (_) {}
+}
