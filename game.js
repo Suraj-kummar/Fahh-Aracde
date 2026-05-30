@@ -403,3 +403,17 @@ function update() {
   if (activePowerup) { powerupTimer--; if (powerupTimer <= 0) { activePowerup = null; powerupTimer = 0; } updatePowerupDisplay(); }
   pipeSpeed = pipeSpeed_for(score);
   if (pipes.length === 0 || W - pipes[pipes.length-1].x >= PIPE_SPAWN_DIST) spawnPipeAndItems();
+  for (const p of pipes) {
+    p.x -= pipeSpeed;
+    if (p.moving) { p.movePhase += 0.015; const s = Math.sin(p.movePhase) * p.moveRange; p.topH = p.baseTopH + s; p.bottomY = p.topH + PIPE_GAP; }
+    if (!p.scored && p.x + PIPE_WIDTH < BIRD_X) {
+      p.scored = true; score++; combo++; updateScore(); updateComboDisplay();
+      playScore(); spawnScoreParticles();
+      if (score % 10 === 0) { showMilestone("🔥 " + score + "!"); triggerShake(4, 5); }
+      if (score >= 10) unlockAchievement("decade");
+      if (score >= 25) unlockAchievement("speed_demon");
+      if (score >= 50) unlockAchievement("century");
+    }
+    if (birdCollidesWithPipe(p)) { combo = 0; updateComboDisplay(); handleBirdHit(); if (state !== "playing") return; }
+  }
+  pipes = pipes.filter(p => p.x + PIPE_WIDTH >= 0);
