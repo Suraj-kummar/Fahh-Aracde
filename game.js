@@ -303,3 +303,17 @@ function showDeadScreen() {
   }
   overlay.classList.remove("hidden"); triggerShake(12, 18);
 }
+
+// ── Input ──────────────────────────────────────────────────
+function handleFlap() {
+  if (state === "start" || state === "dead") { startGame(); return; }
+  if (state !== "playing") return;
+  if (!doubleFlapped) {
+    birdVY = gravitySign === 1 ? FLAP_FORCE_NORMAL : FLAP_FORCE_INVERTED;
+    doubleFlapped = true; doubleFlappedTimer = DOUBLE_FLAP_RESET;
+  } else {
+    birdVY = gravitySign === 1 ? FLAP_FORCE_NORMAL * 0.6 : FLAP_FORCE_INVERTED * 0.6;
+  }
+  const rate = 0.9 + (pipeSpeed - PIPE_SPEED_INIT) / (PIPE_SPEED_MAX - PIPE_SPEED_INIT) * 0.4;
+  playFahh(rate); spawnFlapParticles();
+}
