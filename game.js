@@ -188,3 +188,18 @@ let combo = 0, comboActive = false, sessionCoins = 0;
 let doubleFlapped = false, doubleFlappedTimer = 0, gravityFlipCount = 0;
 let shakeFrames = 0, shakeAmount = 0;
 let cloudOffset = 0, hillOffset = 0, starOffset = 0;
+
+// ── Day/Night Cycle ────────────────────────────────────────
+function lerpColor(a, b, t) {
+  const ah = a.slice(1), bh = b.slice(1);
+  const ar=parseInt(ah.slice(0,2),16), ag=parseInt(ah.slice(2,4),16), ab_=parseInt(ah.slice(4,6),16);
+  const br=parseInt(bh.slice(0,2),16), bg=parseInt(bh.slice(2,4),16), bb_=parseInt(bh.slice(4,6),16);
+  return "rgb("+Math.round(ar+(br-ar)*t)+","+Math.round(ag+(bg-ag)*t)+","+Math.round(ab_+(bb_-ab_)*t)+")";
+}
+function getSkyColors(score) {
+  const phase = Math.min(score / 50, 1);
+  if (phase < 0.25) { const t = phase/0.25; return {top:lerpColor("#1a0533","#0d1b6e",t),mid:lerpColor("#3d0c5c","#1a3a7c",t),bottom:lerpColor("#7b2d4a","#0f2460",t)}; }
+  if (phase < 0.5)  { const t = (phase-0.25)/0.25; return {top:lerpColor("#0d1b6e","#0a4a8a",t),mid:lerpColor("#1a3a7c","#1265aa",t),bottom:lerpColor("#0f2460","#1e88e5",t)}; }
+  if (phase < 0.75) { const t = (phase-0.5)/0.25; return {top:lerpColor("#0a4a8a","#1a0a2e",t),mid:lerpColor("#1265aa","#6b1a1a",t),bottom:lerpColor("#1e88e5","#e74c3c",t)}; }
+  const t = (phase-0.75)/0.25; return {top:lerpColor("#1a0a2e","#03001a",t),mid:lerpColor("#6b1a1a","#0d0d2b",t),bottom:lerpColor("#e74c3c","#0f2460",t)};
+}
