@@ -560,3 +560,6 @@ function loop() {
   drawBoundaries(); ctx.restore();
   update(); requestAnimationFrame(loop);
 }
+
+// ── Bootstrap ──────────────────────────────────────────────
+updateHeartsDisplay(); showStartScreen(); updateGravityIndicator(); renderLeaderboard(); loop();
