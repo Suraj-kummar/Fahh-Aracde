@@ -252,3 +252,10 @@ function resetGame() {
   updateHeartsDisplay(); updatePowerupDisplay();
   updateCoinsDisplay(); updateComboDisplay();
 }
+
+function startGame() {
+  if (audioCtx.state === "suspended") audioCtx.resume();
+  resetGame(); state = "playing";
+  overlay.classList.add("hidden"); lbPanel.classList.add("hidden");
+  startMusic(); unlockAchievement("first_flight");
+}
