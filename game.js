@@ -64,3 +64,27 @@ function playDie() {
     osc.start(); osc.stop(audioCtx.currentTime + 0.45);
   } catch (_) {}
 }
+
+function playPowerup() {
+  try {
+    [523, 659, 784, 1047].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination); osc.type = "triangle";
+      const t = audioCtx.currentTime + i * 0.08;
+      osc.frequency.setValueAtTime(freq, t); gain.gain.setValueAtTime(0.15, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+      osc.start(t); osc.stop(t + 0.2);
+    });
+  } catch (_) {}
+}
+function playCoin() {
+  try {
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.type = "sine";
+    osc.frequency.setValueAtTime(1046, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(1318, audioCtx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.18);
+  } catch (_) {}
+}
