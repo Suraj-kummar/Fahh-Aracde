@@ -454,3 +454,18 @@ function drawBackground() {
   }
   ctx.globalAlpha = 1;
 }
+
+function drawClouds() {
+  const cd = [[0.1,0.15,0.6],[0.35,0.12,0.45],[0.6,0.18,0.55],[0.82,0.1,0.5]];
+  ctx.fillStyle = "rgba(255,255,255,0.07)";
+  for (const [xF,yF,sc] of cd) {
+    const cx = ((xF*W - cloudOffset*0.3) % W + W) % W, cy = yF*H, r = sc*60;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.arc(cx+r*0.6,cy-r*0.3,r*0.7,0,Math.PI*2); ctx.arc(cx-r*0.5,cy-r*0.2,r*0.6,0,Math.PI*2); ctx.fill();
+  }
+}
+function drawHills() {
+  ctx.fillStyle = "rgba(15,36,96,0.35)"; ctx.beginPath(); ctx.moveTo(0, H);
+  const hw = W * 0.6;
+  for (let x = -hillOffset % hw; x < W + hw; x += hw * 0.5) ctx.quadraticCurveTo(x+hw*0.25, H-80, x+hw*0.5, H);
+  ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+}
