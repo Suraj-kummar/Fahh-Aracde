@@ -353,3 +353,19 @@ function spawnPipeAndItems() {
     powerupItems.push({ x: W + PIPE_WIDTH + 60, y: topH + PIPE_GAP / 2 + (Math.random() - 0.5) * 40, type: types[Math.floor(Math.random() * types.length)], collected: false, r: 14, bob: Math.random() * Math.PI * 2 });
   }
 }
+
+// ── Particles ──────────────────────────────────────────────
+function spawnFlapParticles() {
+  for (let i = 0; i < 6; i++) particles.push({ x: BIRD_X, y: birdY, vx: -Math.random()*2.5-0.5, vy: (Math.random()-0.5)*2.5, alpha: 1, color: gravitySign===1?"#f9ca24":"#ff6b6b", r: Math.random()*4+2 });
+}
+function spawnGravityParticles() {
+  for (let i = 0; i < 14; i++) { const a = (Math.PI*2*i)/14; particles.push({ x: BIRD_X, y: birdY, vx: Math.cos(a)*(Math.random()*3+1), vy: Math.sin(a)*(Math.random()*3+1), alpha: 1, color: gravitySign===1?"#4ecca3":"#a29bfe", r: Math.random()*5+2 }); }
+}
+function spawnScoreParticles() {
+  for (let i = 0; i < 20; i++) particles.push({ x: W/2, y: H/2, vx: (Math.random()-0.5)*7, vy: (Math.random()-0.5)*7, alpha: 1, color: "hsl("+(Math.random()*60+30)+",100%,65%)", r: Math.random()*5+3 });
+}
+function spawnPowerupBurst(x, y, type) {
+  const colors = { shield: "#74b9ff", slowmo: "#55efc4", magnet: "#fd79a8" };
+  const c = colors[type] || "#fff";
+  for (let i = 0; i < 30; i++) { const a = (Math.PI*2*i)/30, s = Math.random()*5+2; particles.push({ x, y, vx: Math.cos(a)*s, vy: Math.sin(a)*s, alpha: 1, color: c, r: Math.random()*6+2 }); }
+}
