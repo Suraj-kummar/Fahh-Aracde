@@ -88,3 +88,27 @@ function playCoin() {
     osc.start(); osc.stop(audioCtx.currentTime + 0.18);
   } catch (_) {}
 }
+
+let musicNodes = null, musicGain = null;
+function startMusic() {
+  try {
+    if (musicGain) { musicGain.gain.setValueAtTime(0.06, audioCtx.currentTime); return; }
+    musicGain = audioCtx.createGain();
+    musicGain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+    musicGain.connect(audioCtx.destination);
+    const melody = [261, 329, 392, 523, 392, 329]; let step = 0;
+    function tick() {
+      const osc = audioCtx.createOscillator();
+      osc.connect(musicGain); osc.type = "triangle";
+      osc.frequency.setValueAtTime(melody[step % melody.length], audioCtx.currentTime);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.13); step++;
+    }
+    musicNodes = setInterval(tick, 170);
+  } catch (_) {}
+}
+function stopMusic() {
+  try {
+    if (musicNodes) clearInterval(musicNodes);
+    if (musicGain) { musicGain.gain.setValueAtTime(0.001, audioCtx.currentTime); musicGain = null; musicNodes = null; }
+  } catch (_) {}
+}
