@@ -374,3 +374,15 @@ function spawnPowerupBurst(x, y, type) {
 function circleRect(cx,cy,cr,rx,ry,rw,rh){const nx=Math.max(rx,Math.min(cx,rx+rw)),ny=Math.max(ry,Math.min(cy,ry+rh));return(cx-nx)**2+(cy-ny)**2<cr*cr;}
 function birdCollidesWithPipe(p){const r=BIRD_SIZE/2-3;return circleRect(BIRD_X,birdY,r,p.x,0,PIPE_WIDTH,p.topH)||circleRect(BIRD_X,birdY,r,p.x,p.bottomY,PIPE_WIDTH,H-p.bottomY);}
 function circleDist(ax,ay,bx,by,sr){return(ax-bx)**2+(ay-by)**2<sr*sr;}
+
+// ── Lives System ───────────────────────────────────────────
+function handleBirdHit() {
+  if (invincibleFrames > 0) return;
+  if (activePowerup === "shield" && !shieldHit) {
+    shieldHit = true; activePowerup = null; powerupTimer = 0;
+    updatePowerupDisplay(); invincibleFrames = INVINCIBLE_FRAMES; triggerShake(8, 10); return;
+  }
+  lives--; updateHeartsDisplay();
+  invincibleFrames = INVINCIBLE_FRAMES; triggerShake(10, 12);
+  if (lives <= 0) { playDie(); showDeadScreen(); }
+}
