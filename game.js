@@ -112,3 +112,21 @@ function stopMusic() {
     if (musicGain) { musicGain.gain.setValueAtTime(0.001, audioCtx.currentTime); musicGain = null; musicNodes = null; }
   } catch (_) {}
 }
+
+// ── Constants ──────────────────────────────────────────────
+const GRAVITY_NORMAL      =  0.45;
+const GRAVITY_INVERTED    = -0.45;
+const FLAP_FORCE_NORMAL   = -8.5;
+const FLAP_FORCE_INVERTED =  8.5;
+const PIPE_WIDTH          = 58;
+const PIPE_GAP            = 162;
+const PIPE_SPEED_INIT     = 1.2;
+const PIPE_SPEED_MAX      = 2.8;
+const PIPE_SPEED_INC      = 0.03;
+const PIPE_SPAWN_DIST     = 260;
+const BIRD_SIZE           = 30;
+const BIRD_X              = 90;
+const MAX_LIVES           = 3;
+const INVINCIBLE_FRAMES   = 90;
+const POWERUP_DURATION    = 240;
+const DOUBLE_FLAP_RESET   = 60;
