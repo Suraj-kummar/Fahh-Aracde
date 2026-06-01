@@ -13,7 +13,7 @@ yeah that's it. that's the game.
 
 no lore. no story. no character development.  
 just a screaming chicken and your will to survive.
-
+  
 ---
 
 ## how to not die (tutorial nobody asked for)
