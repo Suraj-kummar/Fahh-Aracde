@@ -41,3 +41,46 @@
       position: absolute;
       top: 12px; left: 14px;
       font-size: 1.05rem; font-weight: 700;
+      color: #f9ca24;
+      text-shadow: 0 0 12px rgba(249,202,36,0.6);
+    }
+
+    /* Flappy overlay (start / dead) */
+    #gameOverlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(6px);
+      opacity: 1;
+      transition: opacity 0.35s ease;
+    }
+    #gameOverlay.hidden { opacity: 0; pointer-events: none; }
+
+    #overlayTitle {
+      font-size: 2.4rem; font-weight: 900; line-height: 1;
+    }
+    #overlayTitle.dead  { color: #ff6b6b; animation: shake 0.4s ease; }
+    #overlayTitle.start {
+      background: linear-gradient(135deg, #f9ca24, #f0932b);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    #overlayScore { font-size: 1.1rem; color: #ccc; font-weight: 400; }
+    #overlayBest  { font-size: 0.85rem; color: #8899bb; }
+    #overlayHint  {
+      margin-top: 6px; font-size: 0.8rem;
+      color: rgba(255,255,255,0.45);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    #flappyControls {
+      font-size: 0.78rem; color: #8899bb;
+      text-align: center; line-height: 2;
+      position: absolute;
+      top: 100%; left: 50%; transform: translateX(-50%);
+      white-space: nowrap;
+      margin-top: 10px;
+    }
+    #flappyControls kbd {
+      display: inline-block;
