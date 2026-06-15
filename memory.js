@@ -351,3 +351,92 @@ const MemoryGame = (() => {
       ctx.fillRect(0, 0, W, H);
 
       ctx.textAlign = "center";
+      ctx.font = "bold 20px 'Press Start 2P', monospace";
+      ctx.fillStyle = "#f9ca24";
+      ctx.shadowColor = "#f9ca24";
+      ctx.shadowBlur  = 30;
+      ctx.fillText("YOU WIN! 🏆", W / 2, H / 2 - 70);
+
+      ctx.font = "11px 'Press Start 2P', monospace";
+      ctx.fillStyle = "rgba(255,255,255,0.7)";
+      ctx.shadowBlur = 0;
+      ctx.fillText(`MOVES: ${moves}   TIME: ${elapsedSecs}s`, W / 2, H / 2 - 25);
+
+      // Best
+      const best = JSON.parse(localStorage.getItem("memory_best") || "null");
+      if (best) {
+        ctx.font = "9px 'Press Start 2P', monospace";
+        ctx.fillStyle = "rgba(162,155,254,0.7)";
+        ctx.fillText(`BEST: ${best.moves} moves / ${best.secs}s`, W / 2, H / 2 + 10);
+      }
+
+      // Blink
+      if (Math.floor(Date.now() / 600) % 2 === 0) {
+        ctx.font = "9px 'Press Start 2P', monospace";
+        ctx.fillStyle = "#f9ca24";
+        ctx.shadowColor = "#f9ca24";
+        ctx.shadowBlur = 10;
+        ctx.fillText("CLICK TO PLAY AGAIN", W / 2, H / 2 + 60);
+        ctx.shadowBlur = 0;
+      }
+    }
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  // ── Main loop ─────────────────────────────────────────────
+  function loop() {
+    update();
+    draw();
+    animId = requestAnimationFrame(loop);
+  }
+
+  // ── Public API ────────────────────────────────────────────
+  function init(canvasEl) {
+    canvas = canvasEl;
+    ctx    = canvas.getContext("2d");
+    W = canvas.width;
+    H = canvas.height;
+
+    // Card layout
+    GAP      = 12;
+    CARD_W   = Math.floor((W - GAP * (GRID_COLS + 1)) / GRID_COLS);
+    CARD_H   = Math.floor((H - 50 - GAP * (GRID_ROWS + 1)) / GRID_ROWS);
+    OFFSET_X = GAP;
+    OFFSET_Y = 44;
+
+    frameCount = 0;
+    particles  = [];
+
+    resetGame();
+
+    canvas.addEventListener("click",     onClick);
+    canvas.addEventListener("touchstart", onTouch, { passive: false });
+
+    if (animId) cancelAnimationFrame(animId);
+    loop();
+  }
+
+  function destroy() {
+    if (animId) cancelAnimationFrame(animId);
+    animId = null;
+    if (lockTimer) { clearTimeout(lockTimer); lockTimer = null; }
+    if (!canvas) return;
+    canvas.removeEventListener("click",      onClick);
+    canvas.removeEventListener("touchstart", onTouch);
+  }
+
+  return { init, destroy };
+})();
