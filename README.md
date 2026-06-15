@@ -1,22 +1,26 @@
-# 🐔 FLAPPY FAHH
+# 🎮 FAHH ARCADE
 
 > *"A game so simple, your grandma could play it. She won't. But she could."*
 
 ---
 
-## what even is this 💀     
+## what even is this 💀
 
-bro it's a chicken.  
-that goes **FAHH**.  
-and you have to dodge pipes.    
-yeah that's it. that's the game.   
+bro it started as one angry chicken.  
+now it's a **whole arcade**.  
+four games. one vibe. zero chill.
 
-no lore. no story. no character development.  
-just a screaming chicken and your will to survive.
-  
+welcome to **Fahh Arcade** — a retro neon mini-game hub built from scratch with pure HTML, Canvas and Web Audio.  
+no frameworks. no libraries. no sanity.
+
 ---
 
-## how to not die (tutorial nobody asked for)
+## 🕹️ the games
+
+### 🐔 Flappy Fahh *(the OG)*
+a chicken that goes **FAHH**.  
+dodge pipes. flip gravity. collect power-ups.  
+achieve greatness. immediately lose it.
 
 | key | what it does |
 |-----|-------------|
@@ -24,38 +28,94 @@ just a screaming chicken and your will to survive.
 | `SHIFT` | flip gravity (yes really) |
 | your dignity | gone after score 3 |
 
----
-
-## features (fancy word for "stuff")
-
-- ✅ **Real FAHH sound** — not a beep. an actual FAHH. you're welcome.
-- ✅ **Gravity flip** — because one way to die wasn't enough
-- ✅ **Particle effects** — we put glitter on the trauma
-- ✅ **Score counter** — so you know exactly how bad you're doing
-- ✅ **Best score** — a reminder of better days
-- ✅ **Dark mode** — it's always dark mode. this is a vibe.
-- ✅ **Getting faster over time** — just like your heart rate
+**features:**
+- Real FAHH sound — not a beep. an actual FAHH. you're welcome.
+- Gravity flip — because one way to die wasn't enough
+- Power-ups — shield 🛡️ magnet 🧲 coins 💰 double-flap ⚡
+- 3 lives + hearts system
+- Particle effects — we put glitter on the trauma
+- Day/night sky cycle tied to your score
+- Achievements system — 7 badges saved to localStorage
+- Local leaderboard — top 5 scores with medals
 
 ---
 
-## tech stack (for the nerds in the chat) 
+### 🏓 Pong
+the classic. you vs AI.  
+neon paddles, glowing ball, dashed centre line.  
+first to 7 wins. good luck with that.
+
+| control | action |
+|---------|--------|
+| `↑ / ↓` or mouse | move your paddle |
+
+**features:**
+- AI with difficulty ramp (gets faster as score rises)
+- Web Audio beep SFX on every hit
+- Neon retro visual style
+
+---
+
+### 🃏 Memory Match
+flip cards. find pairs. try to remember where stuff is.  
+emoji slot-machine vibes. classic nostalgia.
+
+**features:**
+- 8 emoji pairs (16 cards)
+- CSS 3D flip animation
+- Combo multiplier — match fast, score big
+- Countdown timer + win-screen overlay
+- Moves counter + elapsed time tracking
+
+---
+
+### 🔨 Whack-a-Mole
+moles pop up. you whack them. that's it.  
+golden moles give bonus points.  
+miss too many and it's over.
+
+**features:**
+- 9-hole canvas grid
+- Golden moles (12% spawn chance) — bonus points
+- Difficulty ramp — spawn speed increases every 10 pts
+- 60-second countdown
+- Floating score popups on whack
+- Lives system + HUD
+
+---
+
+## tech stack (for the nerds in the chat)
 
 ```
 HTML5  +  Vanilla JS  +  Canvas API  +  Web Audio API  +  Suffering
 ```
 
-zero dependencies. zero frameworks. zero chill.  
+zero dependencies. zero frameworks. zero regrets.  
 just raw HTML and a chicken with anger issues.
+
+**files:**
+| file | what it is |
+|------|-----------|
+| `index.html` | arcade hub — nav, game cards, modals, HUD |
+| `arcade.css` | shared retro neon styles — starfield, cards, modals |
+| `game.js` | Flappy Fahh — full ultra edition |
+| `pong.js` | Pong — single-player vs AI |
+| `memory.js` | Memory Match — emoji card flip |
+| `whackamole.js` | Whack-a-Mole — canvas mole smasher |
+| `fahh.mp3` | the sacred FAHH sound |
 
 ---
 
 ## how to run
 
-1. open `index.html`  
-2. press SPACE  
-3. immediately crash  
-4. question your life choices  
-5. press SPACE again  
+1. clone the repo  
+2. open `index.html` in your browser  
+3. pick a game  
+4. immediately crash  
+5. question your life choices  
+6. pick another game  
+
+no server needed. no npm install. no nonsense.
 
 ---
 
@@ -70,15 +130,12 @@ it REALLY goes FAHH.
 
 ---
 
-
-
-**caption:**
-> 582 lines of javascript.  
-> 1 angry chicken.  
-> 0 regrets.  
-> 
-> built flappy fahh using pure html + canvas + web audio — no libraries, no frameworks, just vibes and stack overflow 😭  
-> 
+> built with pure HTML + Canvas + Web Audio — no libraries, no frameworks, just vibes and Stack Overflow 😭  
+>  
+> **~2 500 lines of JavaScript across 4 games**  
+> **1 angry chicken**  
+> **0 regrets**  
+>  
 > #javascript #gamedev #buildinpublic #htmlcanvas #solodev #webdeveloper #codinglife
 
 ---
@@ -88,18 +145,18 @@ it REALLY goes FAHH.
 - you will lose  
 - you will play again  
 - you will lose again  
-- this is intentional
+- this is intentional  
 
 ---
 
 ## contributing
 
 found a bug? raise an issue.  
-want to improve it? make a PR.  
+want to add a game? make a PR.  
 want to fight? my DMs are open.
 
 ---
-  
+
 ## license
 
 do whatever you want with it bestie 🤷  
