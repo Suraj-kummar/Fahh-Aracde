@@ -299,3 +299,46 @@ function updateBestScores() {
   // Memory
   const mb = JSON.parse(localStorage.getItem("memory_best") || "null");
   document.getElementById("best-memory").innerHTML =
+    mb ? `🏆 Best: <span>${mb.moves} moves / ${mb.secs}s</span>` : "No score yet";
+}
+updateBestScores();
+
+// ── Game launcher ────────────────────────────────────────────
+let activeGame = null;
+
+function launchGame(id) {
+  // Hide hub, show overlay
+  document.getElementById("hub").style.display = "none";
+  const screen = document.getElementById("gameOverlayScreen");
+  screen.classList.add("active");
+
+  // Hide all game containers
+  document.getElementById("flappy-container").style.display = "none";
+  document.getElementById("pong-container").style.display   = "none";
+  document.getElementById("memory-container").style.display = "none";
+
+  activeGame = id;
+
+  if (id === "flappy") {
+    document.getElementById("flappy-container").style.display = "";
+    document.getElementById("flappy-hud").classList.add("active");
+    // Cancel any previous loop then restart
+    if (typeof flappyAnimId !== "undefined" && flappyAnimId) {
+      cancelAnimationFrame(flappyAnimId);
+      flappyAnimId = null;
+    }
+    showStartScreen();
+    updateGravityIndicator();
+    loop();
+  } else if (id === "pong") {
+    document.getElementById("pong-container").style.display = "";
+    PongGame.init(document.getElementById("pong-canvas"));
+  } else if (id === "memory") {
+    document.getElementById("memory-container").style.display = "";
+    MemoryGame.init(document.getElementById("memory-canvas"));
+  }
+}
+
+function exitGame() {
+  // Stop running games
+  if (activeGame === "pong")   PongGame.destroy();
