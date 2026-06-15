@@ -426,3 +426,110 @@ const WhackAMoleGame = (() => {
     if (mole.whacked && mole.whackAnim < 1) {
       const sq = Math.sin(mole.whackAnim * Math.PI);
       scaleX = 1 + sq * 0.35;
+      scaleY = 1 - sq * 0.25;
+    }
+
+    ctx.save();
+    ctx.translate(h.x, h.y - MOLE_H / 2 + yOff);
+    ctx.scale(scaleX, scaleY);
+
+    // Clip mole to be hidden below hole rim when partially up
+    // (we just rely on yOff to push it down, mound drawn on top afterwards)
+
+    const isGolden = mole.golden;
+
+    // ── Body ───────────────────────────────────────────────
+    if (isGolden) {
+      ctx.shadowColor = '#FFD700';
+      ctx.shadowBlur  = 22;
+    }
+
+    const bodyColor1 = isGolden ? '#FFE066' : '#A0623A';
+    const bodyColor2 = isGolden ? '#D4A017' : '#7B4F2E';
+    const bodyGrad   = ctx.createRadialGradient(-8, -10, 4, 0, 0, MOLE_W / 2);
+    bodyGrad.addColorStop(0, bodyColor1);
+    bodyGrad.addColorStop(1, bodyColor2);
+    ctx.fillStyle = bodyGrad;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, MOLE_W / 2, MOLE_H / 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+
+    // ── Face ───────────────────────────────────────────────
+    // Snout
+    const snoutColor = isGolden ? '#FFC200' : '#C47A45';
+    ctx.fillStyle = snoutColor;
+    ctx.beginPath();
+    ctx.ellipse(0, 8, 16, 11, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Nose
+    ctx.fillStyle = isGolden ? '#A0522D' : '#3A1A00';
+    ctx.beginPath();
+    ctx.ellipse(0, 4, 6, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Nose shine
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.beginPath();
+    ctx.ellipse(-2, 2.5, 2, 1.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Eyes — animate blinking occasionally via mole.upTimer
+    const blink = mole.phase === 'up' && (Math.floor(mole.upTimer / 900) % 5 === 0)
+                  && ((mole.upTimer % 900) < 120);
+    const eyeH  = blink ? 2 : 8;
+
+    [-10, 10].forEach(ex => {
+      // Eye white
+      ctx.fillStyle = '#FFFDE7';
+      ctx.beginPath();
+      ctx.ellipse(ex, -6, 8, eyeH, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Pupil
+      if (!blink) {
+        ctx.fillStyle = isGolden ? '#1A0A00' : '#1A0A00';
+        ctx.beginPath();
+        ctx.ellipse(ex + 1.5, -5, 4, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Shine
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.beginPath();
+        ctx.ellipse(ex + 3, -7, 2, 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+
+    // Teeth
+    if (!mole.whacked) {
+      ctx.fillStyle = '#FFFFFF';
+      [-5, 2].forEach(tx => {
+        ctx.fillRect(tx, 13, 6, 7);
+      });
+      // Tooth outline
+      ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+      ctx.lineWidth = 0.5;
+      [-5, 2].forEach(tx => {
+        ctx.strokeRect(tx, 13, 6, 7);
+      });
+    } else {
+      // X eyes when whacked
+      ctx.strokeStyle = '#FF4444';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      [-10, 10].forEach(ex => {
+        ctx.beginPath(); ctx.moveTo(ex - 5, -11); ctx.lineTo(ex + 5, -1); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ex + 5, -11); ctx.lineTo(ex - 5, -1); ctx.stroke();
+      });
+      // Stars/dizzy
+      ctx.fillStyle = '#FFD700';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('★', 0, -20);
+    }
+
+    // ── Golden glow ring ───────────────────────────────────
+    if (isGolden) {
