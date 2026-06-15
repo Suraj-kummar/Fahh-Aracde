@@ -342,3 +342,49 @@ function launchGame(id) {
 function exitGame() {
   // Stop running games
   if (activeGame === "pong")   PongGame.destroy();
+  if (activeGame === "memory") MemoryGame.destroy();
+  if (activeGame === "flappy") {
+    // Cancel flappy's animation loop
+    if (typeof flappyAnimId !== "undefined" && flappyAnimId) {
+      cancelAnimationFrame(flappyAnimId);
+      flappyAnimId = null;
+    }
+    document.getElementById("flappy-hud").classList.remove("active");
+  }
+  activeGame = null;
+
+  // Hide overlay, show hub
+  const screen = document.getElementById("gameOverlayScreen");
+  screen.classList.remove("active");
+  document.getElementById("hub").style.display = "";
+
+  // Refresh best scores
+  updateBestScores();
+}
+
+// Hook Flappy Fahh best-score save into the existing game.js logic
+// game.js calls showDeadScreen() which updates bestScore variable
+// We intercept that via a MutationObserver on overlayBest text
+(function patchFlappyBestScore() {
+  const ob = new MutationObserver(() => {
+    // bestScore is a global in game.js
+    if (typeof bestScore !== "undefined" && bestScore > 0) {
+      const stored = parseInt(localStorage.getItem("flappy_best") || "0");
+      if (bestScore > stored) localStorage.setItem("flappy_best", bestScore);
+    }
+  });
+  ob.observe(document.getElementById("overlayBest"), { childList: true, subtree: true, characterData: true });
+})();
+
+// Clicking anywhere on the card (outside the play button) also launches it
+document.querySelectorAll(".game-card").forEach(card => {
+  card.addEventListener("click", e => {
+    // play-btn already has its own onclick — don't double-fire
+    if (e.target.tagName === "BUTTON") return;
+    const id = card.id.replace("card-", "");
+    launchGame(id);
+  });
+});
+</script>
+</body>
+</html>
