@@ -213,3 +213,46 @@
   </div>
 
   <footer class="hub-footer">FAHH ARCADE &nbsp;•&nbsp; MADE WITH ❤️</footer>
+</div>
+
+<!-- ── FULL-SCREEN GAME OVERLAY ─────────────────────────────── -->
+<div id="gameOverlayScreen">
+  <button class="back-btn" id="backBtn" onclick="exitGame()">← BACK</button>
+
+  <!-- Flappy Fahh -->
+  <div id="flappy-container" style="display:none; position:relative;">
+    <div class="game-title-badge flappy">🐔 FLAPPY FAHH</div>
+    <div class="canvas-wrapper flappy-wrapper">
+      <canvas id="gameCanvas" width="460" height="580"></canvas>
+      <div id="flappy-hud">
+        <div id="gravityIndicator" class="normal">⬇ NORMAL</div>
+        <div id="scoreEl">Score: 0</div>
+        <div id="gameOverlay">
+          <div id="overlayTitle" class="start">🐔 FLAPPY FAHH</div>
+          <div id="overlayScore"></div>
+          <div id="overlayBest"></div>
+          <div id="overlayHint">Press SPACE or tap to start</div>
+        </div>
+      </div>
+    </div>
+    <div id="flappyControls" style="position:relative;top:auto;left:auto;transform:none;margin-top:12px;">
+      <kbd>SPACE</kbd> Flap &nbsp;|&nbsp; <kbd>SHIFT</kbd> Flip Gravity
+    </div>
+  </div>
+
+  <!-- Pong -->
+  <div id="pong-container" style="display:none; position:relative;">
+    <div class="game-title-badge pong">🏓 PONG</div>
+    <div class="canvas-wrapper pong-wrapper">
+      <canvas id="pong-canvas" width="560" height="420"></canvas>
+    </div>
+  </div>
+
+  <!-- Memory Match -->
+  <div id="memory-container" style="display:none; position:relative;">
+    <div class="game-title-badge memory">🃏 MEMORY MATCH</div>
+    <div class="canvas-wrapper memory-wrapper">
+      <canvas id="memory-canvas" width="420" height="500"></canvas>
+    </div>
+  </div>
+
