@@ -283,3 +283,98 @@ const PongGame = (() => {
     ctx.fillStyle = "rgba(255,255,255,0.25)";
     ctx.fillText("YOU", W / 4, 88);
     ctx.fillText("CPU", (W * 3) / 4, 88);
+
+    // Ball trail
+    for (let i = 0; i < trail.length; i++) {
+      const t = trail[i];
+      const alpha = (i / trail.length) * 0.4;
+      const radius = BALL_R * (i / trail.length) * 0.8;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = "#4ecca3";
+      ctx.shadowColor = "#4ecca3";
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, Math.max(0.5, radius), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Ball
+    ctx.save();
+    ctx.shadowColor = "#74b9ff";
+    ctx.shadowBlur  = 20;
+    ctx.fillStyle   = "#fff";
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, BALL_R, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Player paddle
+    ctx.save();
+    ctx.shadowColor = "#4ecca3";
+    ctx.shadowBlur  = 18;
+    const pg = ctx.createLinearGradient(14, playerY, 14 + PADDLE_W, playerY);
+    pg.addColorStop(0, "#4ecca3");
+    pg.addColorStop(1, "#00b894");
+    ctx.fillStyle = pg;
+    roundRect(ctx, 14, playerY, PADDLE_W, PADDLE_H, 4);
+    ctx.fill();
+    ctx.restore();
+
+    // AI paddle
+    ctx.save();
+    ctx.shadowColor = "#ff6b6b";
+    ctx.shadowBlur  = 18;
+    const ag = ctx.createLinearGradient(W - 14 - PADDLE_W, aiY, W - 14, aiY);
+    ag.addColorStop(0, "#e74c3c");
+    ag.addColorStop(1, "#ff6b6b");
+    ctx.fillStyle = ag;
+    roundRect(ctx, W - 14 - PADDLE_W, aiY, PADDLE_W, PADDLE_H, 4);
+    ctx.fill();
+    ctx.restore();
+
+    // Particles
+    for (const p of particles) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.alpha);
+      ctx.fillStyle   = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur  = 8;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, Math.max(0, p.r), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Overlay screens
+    if (gameState === "start" || gameState === "over") {
+      ctx.save();
+      ctx.fillStyle = "rgba(0,0,0,0.72)";
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+
+      ctx.textAlign = "center";
+      if (gameState === "start") {
+        ctx.font = "bold 20px 'Press Start 2P', monospace";
+        ctx.fillStyle = "#4ecca3";
+        ctx.shadowColor = "#4ecca3";
+        ctx.shadowBlur = 20;
+        ctx.fillText("PONG", W / 2, H / 2 - 60);
+
+        ctx.font = "9px 'Press Start 2P', monospace";
+        ctx.fillStyle = "rgba(255,255,255,0.5)";
+        ctx.shadowBlur = 0;
+        ctx.fillText("MOUSE / W+S / ARROW KEYS", W / 2, H / 2 - 20);
+        ctx.fillText("FIRST TO " + WIN_SCORE + " WINS", W / 2, H / 2 + 5);
+
+        drawBlinkText("CLICK OR PRESS SPACE", W / 2, H / 2 + 55, "#4ecca3");
+
+      } else if (gameState === "over") {
+        const isWin = winner === "player";
+        const titleText = isWin ? "YOU WIN!" : "GAME OVER";
+        const titleColor = isWin ? "#f9ca24" : "#ff6b6b";
+
+        ctx.font = "bold 18px 'Press Start 2P', monospace";
+        ctx.fillStyle = titleColor;
+        ctx.shadowColor = titleColor;
