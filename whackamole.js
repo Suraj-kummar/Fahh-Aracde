@@ -105,3 +105,110 @@ const WhackAMoleGame = (() => {
       const src = ac.createBufferSource();
       const ng  = ac.createGain();
       src.buffer = buf;
+      src.connect(ng);
+      ng.connect(ac.destination);
+      ng.gain.setValueAtTime(0.3, t);
+      src.start(t);
+    } catch (_) {}
+  }
+
+  function playGoldenHit() {
+    try {
+      const ac = getAudioCtx();
+      const t  = ac.currentTime;
+      [523, 659, 784, 1047].forEach((freq, i) => {
+        const o = ac.createOscillator();
+        const g = ac.createGain();
+        o.connect(g); g.connect(ac.destination);
+        o.type = 'sine';
+        o.frequency.setValueAtTime(freq, t + i * 0.06);
+        g.gain.setValueAtTime(0.4, t + i * 0.06);
+        g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.06 + 0.25);
+        o.start(t + i * 0.06);
+        o.stop(t + i * 0.06 + 0.3);
+      });
+    } catch (_) {}
+  }
+
+  function playPop() {
+    try {
+      const ac = getAudioCtx();
+      const t  = ac.currentTime;
+      const o  = ac.createOscillator();
+      const g  = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.type = 'sine';
+      o.frequency.setValueAtTime(400, t);
+      o.frequency.exponentialRampToValueAtTime(900, t + 0.07);
+      g.gain.setValueAtTime(0.25, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+      o.start(t);
+      o.stop(t + 0.15);
+    } catch (_) {}
+  }
+
+  function playTick() {
+    try {
+      const ac = getAudioCtx();
+      const t  = ac.currentTime;
+      const o  = ac.createOscillator();
+      const g  = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.type = 'square';
+      o.frequency.setValueAtTime(880, t);
+      g.gain.setValueAtTime(0.15, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+      o.start(t);
+      o.stop(t + 0.1);
+    } catch (_) {}
+  }
+
+  function playGameOver() {
+    try {
+      const ac = getAudioCtx();
+      const t  = ac.currentTime;
+      [220, 180, 140, 100].forEach((freq, i) => {
+        const o = ac.createOscillator();
+        const g = ac.createGain();
+        o.connect(g); g.connect(ac.destination);
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(freq, t + i * 0.18);
+        g.gain.setValueAtTime(0.35, t + i * 0.18);
+        g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.18 + 0.35);
+        o.start(t + i * 0.18);
+        o.stop(t + i * 0.18 + 0.4);
+      });
+    } catch (_) {}
+  }
+
+  // ─── Easing ──────────────────────────────────────────────
+  function easeOutBack(t) {
+    const c1 = 1.70158, c3 = c1 + 1;
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+  }
+  function easeInQuad(t) { return t * t; }
+
+  // ─── Particle Spawner ────────────────────────────────────
+  function spawnParticles(x, y, golden) {
+    const count  = golden ? 18 : 10;
+    const colors = golden
+      ? ['#FFD700', '#FFF200', '#FFA500', '#FFFACD', '#FFEC00']
+      : ['#FF6B6B', '#FFD93D', '#6BCBFF', '#B5FF6B', '#FF9EFF'];
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
+      const speed = 2 + Math.random() * (golden ? 4 : 3);
+      particles.push({
+        x, y,
+        vx  : Math.cos(angle) * speed,
+        vy  : Math.sin(angle) * speed - 2,
+        life: 1,
+        decay: 0.025 + Math.random() * 0.02,
+        r   : 3 + Math.random() * (golden ? 5 : 3),
+        color: colors[Math.floor(Math.random() * colors.length)],
+        star : golden && Math.random() < 0.5,
+      });
+    }
+  }
+
+  // ─── Reset / Init Logic ──────────────────────────────────
+  function resetGame() {
