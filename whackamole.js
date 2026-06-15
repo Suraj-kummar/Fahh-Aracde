@@ -640,3 +640,110 @@ const WhackAMoleGame = (() => {
         : '#FF3030';                                    // red
 
     // Pulse effect when low
+    if (frac < 0.2) {
+      const pulse = 0.7 + 0.3 * Math.sin(Date.now() / 150);
+      ctx.globalAlpha = pulse;
+    }
+
+    ctx.fillStyle = barColor;
+    ctx.shadowColor = barColor;
+    ctx.shadowBlur  = 8;
+    roundRect(barX, barY, Math.max(0, barW * frac), barH, 8);
+    ctx.fill();
+    ctx.shadowBlur  = 0;
+    ctx.globalAlpha = 1;
+
+    // Timer bar border
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth   = 1.5;
+    roundRect(barX - 2, barY - 2, barW + 4, barH + 4, 10);
+    ctx.stroke();
+
+    // Time text
+    ctx.fillStyle   = '#FFFFFF';
+    ctx.font        = '11px "Press Start 2P", monospace';
+    ctx.textAlign   = 'left';
+    ctx.shadowColor = 'rgba(0,0,0,0.8)';
+    ctx.shadowBlur  = 4;
+    ctx.fillText(`${timeLeft}s`, barX + 4, barY + 13);
+    ctx.shadowBlur  = 0;
+
+    // Score
+    ctx.fillStyle   = '#FFD700';
+    ctx.font        = '14px "Press Start 2P", monospace';
+    ctx.textAlign   = 'right';
+    ctx.shadowColor = '#FFD700';
+    ctx.shadowBlur  = 10;
+    ctx.fillText(`${score}`, CANVAS_W - 16, barY + 13);
+    ctx.shadowBlur  = 0;
+
+    // Score label
+    ctx.fillStyle = 'rgba(255,215,0,0.6)';
+    ctx.font      = '6px "Press Start 2P", monospace';
+    ctx.fillText('PTS', CANVAS_W - 16, barY + 25);
+
+    // Best score
+    ctx.fillStyle = 'rgba(200,200,255,0.5)';
+    ctx.font      = '6px "Press Start 2P", monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(`BEST ${bestScore}`, barX + 4, barY + 25);
+
+    ctx.textAlign = 'left';
+  }
+
+  function drawParticles() {
+    particles.forEach(p => {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life);
+
+      if (p.text) {
+        // Floating score text
+        ctx.fillStyle = p.color;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur  = 12;
+        ctx.font      = '11px "Press Start 2P", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(p.text, p.x, p.y);
+      } else if (p.star) {
+        // Star shape
+        ctx.fillStyle   = p.color;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur  = 10;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(Date.now() / 300);
+        drawStar(0, 0, p.r, p.r * 0.4, 5);
+        ctx.fill();
+      } else {
+        ctx.fillStyle   = p.color;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur  = 8;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+  }
+
+  function drawStar(cx, cy, outerR, innerR, points) {
+    ctx.beginPath();
+    for (let i = 0; i < points * 2; i++) {
+      const r     = i % 2 === 0 ? outerR : innerR;
+      const angle = (Math.PI / points) * i - Math.PI / 2;
+      if (i === 0) ctx.moveTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle));
+      else ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle));
+    }
+    ctx.closePath();
+  }
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
