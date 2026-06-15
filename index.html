@@ -256,3 +256,46 @@
     </div>
   </div>
 
+</div>
+
+<!-- ── Scripts ─────────────────────────────────────────────── -->
+<script src="game.js"></script>
+<script src="pong.js"></script>
+<script src="memory.js"></script>
+
+<script>
+"use strict";
+
+// ── Starfield generation ─────────────────────────────────────
+(function buildStarfield() {
+  const sf = document.getElementById("starfield");
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement("div");
+    s.className = "star";
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width: ${size}px; height: ${size}px;
+      top: ${Math.random() * 100}%;
+      left: ${Math.random() * 100}%;
+      --d: ${(Math.random() * 4 + 2).toFixed(1)}s;
+      --delay: -${(Math.random() * 5).toFixed(1)}s;
+    `;
+    sf.appendChild(s);
+  }
+})();
+
+// ── Best score display ──────────────────────────────────────
+function updateBestScores() {
+  // Flappy
+  const fb = parseInt(localStorage.getItem("flappy_best") || "0");
+  document.getElementById("best-flappy").innerHTML =
+    fb > 0 ? `🏆 Best: <span>${fb}</span>` : "No score yet";
+
+  // Pong
+  const pb = parseInt(localStorage.getItem("pong_best") || "0");
+  document.getElementById("best-pong").innerHTML =
+    pb > 0 ? `🏆 Best win: <span>${pb} pts</span>` : "No score yet";
+
+  // Memory
+  const mb = JSON.parse(localStorage.getItem("memory_best") || "null");
+  document.getElementById("best-memory").innerHTML =
