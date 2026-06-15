@@ -188,3 +188,98 @@ const PongGame = (() => {
       ballY - BALL_R < playerY + PADDLE_H
     ) {
       ballX = pRight + BALL_R;
+      // Angle based on where ball hits paddle
+      const rel   = (ballY - (playerY + PADDLE_H / 2)) / (PADDLE_H / 2);
+      const angle = rel * 0.9; // max ±~52°
+      const speed = Math.sqrt(ballVX * ballVX + ballVY * ballVY) * 1.07;
+      ballVX =  Math.abs(speed * Math.cos(angle));
+      ballVY =  speed * Math.sin(angle);
+      // Cap speed
+      const maxSpeed = 12;
+      const s = Math.sqrt(ballVX * ballVX + ballVY * ballVY);
+      if (s > maxSpeed) { ballVX *= maxSpeed/s; ballVY *= maxSpeed/s; }
+      lastPaddleHit = frameCount;
+      beep(600, "square", 0.07, 0.2);
+      spawnHitParticles(ballX, ballY, "#4ecca3");
+    }
+
+    // AI paddle hit (right side)
+    const aiLeft = W - PADDLE_W - 14;
+    if (
+      frameCount > lastPaddleHit + 5 &&
+      ballX + BALL_R > aiLeft &&
+      ballX - BALL_R < aiLeft + PADDLE_W &&
+      ballY + BALL_R > aiY &&
+      ballY - BALL_R < aiY + PADDLE_H
+    ) {
+      ballX = aiLeft - BALL_R;
+      const rel   = (ballY - (aiY + PADDLE_H / 2)) / (PADDLE_H / 2);
+      const angle = rel * 0.9;
+      const speed = Math.sqrt(ballVX * ballVX + ballVY * ballVY) * 1.03;
+      ballVX = -Math.abs(speed * Math.cos(angle));
+      ballVY =  speed * Math.sin(angle);
+      const maxSpeed = 12;
+      const s = Math.sqrt(ballVX * ballVX + ballVY * ballVY);
+      if (s > maxSpeed) { ballVX *= maxSpeed/s; ballVY *= maxSpeed/s; }
+      lastPaddleHit = frameCount;
+      beep(350, "square", 0.07, 0.15);
+      spawnHitParticles(ballX, ballY, "#ff6b6b");
+    }
+
+    // Scoring
+    if (ballX - BALL_R < 0) {
+      aiScore++;
+      beep(180, "sawtooth", 0.3, 0.25);
+      if (aiScore >= WIN_SCORE) { gameState = "over"; winner = "ai"; return; }
+      resetBall(1);
+    }
+    if (ballX + BALL_R > W) {
+      playerScore++;
+      beep(880, "sine", 0.2, 0.2);
+      if (playerScore >= WIN_SCORE) { gameState = "over"; winner = "player"; return; }
+      resetBall(-1);
+    }
+
+    // Particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy; p.alpha -= 0.05; p.r *= 0.94;
+      if (p.alpha <= 0) particles.splice(i, 1);
+    }
+  }
+
+  // ── Draw ──────────────────────────────────────────────────
+  function draw() {
+    // Background
+    ctx.fillStyle = "#050510";
+    ctx.fillRect(0, 0, W, H);
+
+    // Center line
+    ctx.setLineDash([8, 10]);
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(W / 2, 0);
+    ctx.lineTo(W / 2, H);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Score display
+    ctx.font = "bold 48px 'Press Start 2P', monospace";
+    ctx.textAlign = "center";
+
+    ctx.fillStyle = "rgba(78,204,163,0.25)";
+    ctx.fillText(playerScore, W / 4, 70);
+    ctx.fillStyle = "rgba(255,107,107,0.25)";
+    ctx.fillText(aiScore, (W * 3) / 4, 70);
+
+    ctx.fillStyle = "rgba(78,204,163,0.9)";
+    ctx.fillText(playerScore, W / 4, 68);
+    ctx.fillStyle = "rgba(255,107,107,0.9)";
+    ctx.fillText(aiScore, (W * 3) / 4, 68);
+
+    // Labels
+    ctx.font = "10px 'Press Start 2P', monospace";
+    ctx.fillStyle = "rgba(255,255,255,0.25)";
+    ctx.fillText("YOU", W / 4, 88);
+    ctx.fillText("CPU", (W * 3) / 4, 88);
