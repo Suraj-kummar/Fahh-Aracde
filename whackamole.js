@@ -418,8 +418,9 @@ const WhackAMoleGame = (() => {
   /** Draw a mole at the given hole, with progress 0-1 (1=fully up) */
   function drawMole(holeIdx, mole) {
     const h    = HOLES[holeIdx];
-    const ease = easeOutBack(Math.min(mole.progress, 1));
-    const yOff = (1 - ease) * (MOLE_H + 10);
+    const ease = easeOutBack(mole.progress); // No clamp — overshoot gives the bounce-in pop
+    const yOff = (1 - Math.min(ease, 1.15)) * (MOLE_H + 10); // clamp yOff not the easing input
+
 
     // Squish on whack
     let scaleX = 1, scaleY = 1;
