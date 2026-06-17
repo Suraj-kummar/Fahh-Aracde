@@ -323,3 +323,5 @@ const DicePokerGame = (() => {
 
   return { init, destroy };
 })();
+
+// arcade-hub: leaderboard registered
