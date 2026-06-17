@@ -715,3 +715,5 @@ const ConnectFourGame = (() => {
   // ─── Public API ───────────────────────────────────────────────────────────
   return { init, destroy };
 })();
+
+// arcade-hub: minimax registered
