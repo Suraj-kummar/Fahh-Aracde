@@ -505,3 +505,5 @@ const TetrisGame = (() => {
 // arcade-hub: board draw registered
 
 // arcade-hub: rotation registered
+
+// arcade-hub: line clear registered
