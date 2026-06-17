@@ -3,162 +3,117 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fahh Arcade 🎮</title>
-  <meta name="description" content="A retro mini-game arcade featuring Flappy Fahh, Pong and Memory Match." />
+  <title>Fahh Arcade 🎮 — 28 Games</title>
+  <meta name="description" content="A retro neon mini-game arcade with 28 classic games — Flappy Fahh, Snake, Tetris, Pong, Space Invaders, Pac-Man, Galaga and more!" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="arcade.css" />
 
   <style>
-    /* ── Flappy Fahh in-game HUD (shown inside the game overlay) ── */
-    #flappy-hud {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      display: none;
-    }
-    #flappy-hud.active { display: block; }
-    /* Canvas and the game overlay inside need to catch pointer events */
-    #gameCanvas       { pointer-events: auto; }
-    #gameOverlay      { pointer-events: auto; }
+    /* ── Flappy Fahh in-game HUD ── */
+    #flappy-hud { position:absolute; inset:0; pointer-events:none; display:none; }
+    #flappy-hud.active { display:block; }
+    #gameCanvas   { pointer-events:auto; }
+    #gameOverlay  { pointer-events:auto; }
 
     #gravityIndicator {
-      position: absolute;
-      top: 12px; right: 14px;
-      font-size: 0.72rem; font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 20px;
-      background: rgba(0,0,0,0.55);
-      border: 1.5px solid rgba(255,255,255,0.2);
-      transition: color 0.3s, border-color 0.3s;
-      letter-spacing: 1px;
+      position:absolute; top:12px; right:14px;
+      font-size:0.72rem; font-weight:700;
+      padding:4px 12px; border-radius:20px;
+      background:rgba(0,0,0,0.55);
+      border:1.5px solid rgba(255,255,255,0.2);
+      transition:color 0.3s,border-color 0.3s; letter-spacing:1px;
     }
-    #gravityIndicator.normal   { color: #4ecca3; border-color: rgba(78,204,163,0.5); }
-    #gravityIndicator.inverted { color: #ff6b6b; border-color: rgba(255,107,107,0.5); }
-
+    #gravityIndicator.normal   { color:#4ecca3; border-color:rgba(78,204,163,0.5); }
+    #gravityIndicator.inverted { color:#ff6b6b; border-color:rgba(255,107,107,0.5); }
     #scoreEl {
-      position: absolute;
-      top: 12px; left: 14px;
-      font-size: 1.05rem; font-weight: 700;
-      color: #f9ca24;
-      text-shadow: 0 0 12px rgba(249,202,36,0.6);
+      position:absolute; top:12px; left:14px;
+      font-size:1.05rem; font-weight:700;
+      color:#f9ca24; text-shadow:0 0 12px rgba(249,202,36,0.6);
     }
-
-    /* Flappy overlay (start / dead) */
     #gameOverlay {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 10px;
-      background: rgba(0,0,0,0.72);
-      backdrop-filter: blur(6px);
-      opacity: 1;
-      transition: opacity 0.35s ease;
+      position:absolute; inset:0;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:10px;
+      background:rgba(0,0,0,0.72); backdrop-filter:blur(6px);
+      opacity:1; transition:opacity 0.35s ease;
     }
-    #gameOverlay.hidden { opacity: 0; pointer-events: none; }
-
-    #overlayTitle {
-      font-size: 2.4rem; font-weight: 900; line-height: 1;
-    }
-    #overlayTitle.dead  { color: #ff6b6b; animation: shake 0.4s ease; }
+    #gameOverlay.hidden { opacity:0; pointer-events:none; }
+    #overlayTitle { font-size:2.4rem; font-weight:900; line-height:1; }
+    #overlayTitle.dead  { color:#ff6b6b; animation:shake 0.4s ease; }
     #overlayTitle.start {
-      background: linear-gradient(135deg, #f9ca24, #f0932b);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
+      background:linear-gradient(135deg,#f9ca24,#f0932b);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     }
-    #overlayScore { font-size: 1.1rem; color: #ccc; font-weight: 400; }
-    #overlayBest  { font-size: 0.85rem; color: #8899bb; }
-    #overlayHint  {
-      margin-top: 6px; font-size: 0.8rem;
-      color: rgba(255,255,255,0.45);
-      animation: pulse 1.8s ease-in-out infinite;
-    }
+    #overlayScore { font-size:1.1rem; color:#ccc; font-weight:400; }
+    #overlayBest  { font-size:0.85rem; color:#8899bb; }
+    #overlayHint  { margin-top:6px; font-size:0.8rem; color:rgba(255,255,255,0.45); animation:pulse 1.8s ease-in-out infinite; }
     #flappyControls {
-      font-size: 0.78rem; color: #8899bb;
-      text-align: center; line-height: 2;
-      position: absolute;
-      top: 100%; left: 50%; transform: translateX(-50%);
-      white-space: nowrap;
-      margin-top: 10px;
+      font-size:0.78rem; color:#8899bb; text-align:center; line-height:2;
+      position:absolute; top:100%; left:50%; transform:translateX(-50%);
+      white-space:nowrap; margin-top:10px;
     }
     #flappyControls kbd {
-      display: inline-block;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 5px; padding: 1px 8px;
-      color: #f9ca24; font-weight: 700;
-      font-size: 0.78rem;
+      display:inline-block; background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.15); border-radius:5px;
+      padding:1px 8px; color:#f9ca24; font-weight:700; font-size:0.78rem;
     }
 
     /* Canvas wrappers */
     .canvas-wrapper {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 2px rgba(255,255,255,0.1),
-        0 0 40px rgba(255,255,255,0.05),
-        0 40px 80px rgba(0,0,0,0.6);
+      position:relative; border-radius:16px; overflow:hidden;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.1),0 0 40px rgba(255,255,255,0.05),0 40px 80px rgba(0,0,0,0.6);
     }
+    .canvas-wrapper.flappy-wrapper  { box-shadow:0 0 0 2px rgba(249,202,36,0.3),0 0 40px rgba(249,202,36,0.2),0 40px 80px rgba(0,0,0,0.6); }
+    .canvas-wrapper.pong-wrapper     { box-shadow:0 0 0 2px rgba(78,204,163,0.3),0 0 40px rgba(78,204,163,0.2),0 40px 80px rgba(0,0,0,0.6); }
+    .canvas-wrapper.memory-wrapper   { box-shadow:0 0 0 2px rgba(162,155,254,0.3),0 0 40px rgba(162,155,254,0.2),0 40px 80px rgba(0,0,0,0.6); }
 
-    .canvas-wrapper.flappy-wrapper {
-      box-shadow:
-        0 0 0 2px rgba(249,202,36,0.3),
-        0 0 40px rgba(249,202,36,0.2),
-        0 40px 80px rgba(0,0,0,0.6);
-    }
-    .canvas-wrapper.pong-wrapper {
-      box-shadow:
-        0 0 0 2px rgba(78,204,163,0.3),
-        0 0 40px rgba(78,204,163,0.2),
-        0 40px 80px rgba(0,0,0,0.6);
-    }
-    .canvas-wrapper.memory-wrapper {
-      box-shadow:
-        0 0 0 2px rgba(162,155,254,0.3),
-        0 0 40px rgba(162,155,254,0.2),
-        0 40px 80px rgba(0,0,0,0.6);
-    }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+    @keyframes pulse { 0%,100%{opacity:0.45} 50%{opacity:1} }
 
-    @keyframes shake {
-      0%,100% { transform: translateX(0); }
-      20%      { transform: translateX(-8px); }
-      40%      { transform: translateX(8px); }
-      60%      { transform: translateX(-5px); }
-      80%      { transform: translateX(5px); }
-    }
-    @keyframes pulse {
-      0%,100% { opacity: 0.45; }
-      50%      { opacity: 1; }
-    }
-
-    /* Game title badge inside overlay */
     .game-title-badge {
-      position: absolute;
-      top: 0; left: 50%; transform: translateX(-50%);
-      background: rgba(0,0,0,0.7);
-      border-bottom-left-radius: 12px;
-      border-bottom-right-radius: 12px;
-      padding: 6px 20px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 2px;
-      z-index: 10;
+      position:absolute; top:0; left:50%; transform:translateX(-50%);
+      background:rgba(0,0,0,0.7); border-bottom-left-radius:12px; border-bottom-right-radius:12px;
+      padding:6px 20px; font-family:'Press Start 2P',monospace; font-size:0.55rem;
+      letter-spacing:2px; z-index:10;
     }
-    .game-title-badge.flappy { color: #f9ca24; }
-    .game-title-badge.pong   { color: #4ecca3; }
-    .game-title-badge.memory { color: #a29bfe; }
+    .game-title-badge.flappy      { color:#f9ca24; }
+    .game-title-badge.pong        { color:#4ecca3; }
+    .game-title-badge.memory      { color:#a29bfe; }
+    .game-title-badge.snake       { color:#55efc4; }
+    .game-title-badge.tetris      { color:#fd79a8; }
+    .game-title-badge.breakout    { color:#fdcb6e; }
+    .game-title-badge.invaders    { color:#00cec9; }
+    .game-title-badge.g2048       { color:#e17055; }
+    .game-title-badge.mines       { color:#b2bec3; }
+    .game-title-badge.simon       { color:#6c5ce7; }
+    .game-title-badge.puzzle      { color:#ffeaa7; }
+    .game-title-badge.asteroids   { color:#81ecec; }
+    .game-title-badge.typing      { color:#00b894; }
+    .game-title-badge.flood       { color:#e84393; }
+    .game-title-badge.reaction    { color:#ff7675; }
+    .game-title-badge.blackjack   { color:#2ecc71; }
+    .game-title-badge.dice        { color:#e67e22; }
+    .game-title-badge.target      { color:#e74c3c; }
+    .game-title-badge.runner      { color:#1abc9c; }
+    .game-title-badge.whack       { color:#f39c12; }
+    .game-title-badge.pacman      { color:#ffff00; }
+    .game-title-badge.crossy      { color:#55efc4; }
+    .game-title-badge.bubble      { color:#fd79a8; }
+    .game-title-badge.connect4    { color:#e17055; }
+    .game-title-badge.rhythm      { color:#a29bfe; }
+    .game-title-badge.wordle      { color:#6ab04c; }
+    .game-title-badge.galaga      { color:#00cec9; }
+    .game-title-badge.golf        { color:#badc58; }
 
-    /* Responsive canvas sizing */
-    canvas { display: block; }
+    canvas { display:block; }
   </style>
 </head>
 <body>
 
 <!-- Starfield background -->
 <div class="starfield" id="starfield"></div>
-
 <!-- CRT scanlines -->
 <div class="crt-lines"></div>
 
@@ -166,16 +121,14 @@
 <div id="hub">
   <header class="hub-header">
     <div class="hub-logo">🎮 FAHH ARCADE</div>
-    <div class="hub-subtitle">Choose your game</div>
+    <div class="hub-subtitle">28 Games · Choose Your Fighter</div>
   </header>
 
   <div class="games-grid">
 
-    <!-- Flappy Fahh Card -->
+    <!-- 1 Flappy Fahh -->
     <div class="game-card flappy" id="card-flappy">
-      <div class="card-preview">
-        <span class="icon">🐔</span>
-      </div>
+      <div class="card-preview"><span class="icon">🐔</span></div>
       <div class="card-body">
         <div class="card-title">Flappy Fahh</div>
         <div class="card-desc">Flap through pipes, flip gravity! Classic chaos.</div>
@@ -184,11 +137,53 @@
       </div>
     </div>
 
-    <!-- Pong Card -->
-    <div class="game-card pong" id="card-pong">
-      <div class="card-preview">
-        <span class="icon">🏓</span>
+    <!-- 2 Snake -->
+    <div class="game-card snake" id="card-snake">
+      <div class="card-preview"><span class="icon">🐍</span></div>
+      <div class="card-body">
+        <div class="card-title">Snake</div>
+        <div class="card-desc">Eat, grow, don't bite yourself. Classic!</div>
+        <div class="card-best" id="best-snake">Loading…</div>
+        <button class="play-btn" onclick="launchGame('snake')">▶ PLAY</button>
       </div>
+    </div>
+
+    <!-- 3 Tetris -->
+    <div class="game-card tetris" id="card-tetris">
+      <div class="card-preview"><span class="icon">🧱</span></div>
+      <div class="card-body">
+        <div class="card-title">Tetris</div>
+        <div class="card-desc">Clear lines before the stack reaches the top!</div>
+        <div class="card-best" id="best-tetris">Loading…</div>
+        <button class="play-btn" onclick="launchGame('tetris')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 4 Breakout -->
+    <div class="game-card breakout" id="card-breakout">
+      <div class="card-preview"><span class="icon">🏏</span></div>
+      <div class="card-body">
+        <div class="card-title">Breakout</div>
+        <div class="card-desc">Smash all bricks with your paddle and ball!</div>
+        <div class="card-best" id="best-breakout">Loading…</div>
+        <button class="play-btn" onclick="launchGame('breakout')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 5 Space Invaders -->
+    <div class="game-card invaders" id="card-invaders">
+      <div class="card-preview"><span class="icon">👾</span></div>
+      <div class="card-body">
+        <div class="card-title">Space Invaders</div>
+        <div class="card-desc">Shoot the alien fleet before they reach you!</div>
+        <div class="card-best" id="best-invaders">Loading…</div>
+        <button class="play-btn" onclick="launchGame('invaders')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 6 Pong -->
+    <div class="game-card pong" id="card-pong">
+      <div class="card-preview"><span class="icon">🏓</span></div>
       <div class="card-body">
         <div class="card-title">PONG</div>
         <div class="card-desc">You vs CPU. First to 7 wins. Move fast!</div>
@@ -197,22 +192,252 @@
       </div>
     </div>
 
-    <!-- Memory Match Card -->
-    <div class="game-card memory" id="card-memory">
-      <div class="card-preview">
-        <span class="icon">🃏</span>
+    <!-- 7 2048 -->
+    <div class="game-card g2048" id="card-g2048">
+      <div class="card-preview"><span class="icon">🔢</span></div>
+      <div class="card-body">
+        <div class="card-title">2048</div>
+        <div class="card-desc">Slide tiles, merge numbers, reach 2048!</div>
+        <div class="card-best" id="best-g2048">Loading…</div>
+        <button class="play-btn" onclick="launchGame('g2048')">▶ PLAY</button>
       </div>
+    </div>
+
+    <!-- 8 Minesweeper -->
+    <div class="game-card mines" id="card-mines">
+      <div class="card-preview"><span class="icon">💣</span></div>
+      <div class="card-body">
+        <div class="card-title">Minesweeper</div>
+        <div class="card-desc">Clear the field without triggering a mine!</div>
+        <div class="card-best" id="best-mines">Loading…</div>
+        <button class="play-btn" onclick="launchGame('mines')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 9 Simon Says -->
+    <div class="game-card simon" id="card-simon">
+      <div class="card-preview"><span class="icon">🔴</span></div>
+      <div class="card-body">
+        <div class="card-title">Simon Says</div>
+        <div class="card-desc">Watch the pattern, repeat it. Don't miss!</div>
+        <div class="card-best" id="best-simon">Loading…</div>
+        <button class="play-btn" onclick="launchGame('simon')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 10 Sliding Puzzle -->
+    <div class="game-card puzzle" id="card-puzzle">
+      <div class="card-preview"><span class="icon">🧩</span></div>
+      <div class="card-body">
+        <div class="card-title">15-Puzzle</div>
+        <div class="card-desc">Slide tiles into order in fewest moves!</div>
+        <div class="card-best" id="best-puzzle">Loading…</div>
+        <button class="play-btn" onclick="launchGame('puzzle')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 11 Asteroids -->
+    <div class="game-card asteroids" id="card-asteroids">
+      <div class="card-preview"><span class="icon">☄️</span></div>
+      <div class="card-body">
+        <div class="card-title">Asteroids</div>
+        <div class="card-desc">Thrust, rotate, shoot rocks — survive!</div>
+        <div class="card-best" id="best-asteroids">Loading…</div>
+        <button class="play-btn" onclick="launchGame('asteroids')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 12 Typing Speed -->
+    <div class="game-card typing" id="card-typing">
+      <div class="card-preview"><span class="icon">⌨️</span></div>
+      <div class="card-body">
+        <div class="card-title">Type Rush</div>
+        <div class="card-desc">Type falling words before they hit the ground!</div>
+        <div class="card-best" id="best-typing">Loading…</div>
+        <button class="play-btn" onclick="launchGame('typing')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 13 Color Flood -->
+    <div class="game-card flood" id="card-flood">
+      <div class="card-preview"><span class="icon">🌊</span></div>
+      <div class="card-body">
+        <div class="card-title">Color Flood</div>
+        <div class="card-desc">Flood-fill the board in one color to win!</div>
+        <div class="card-best" id="best-flood">Loading…</div>
+        <button class="play-btn" onclick="launchGame('flood')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 14 Reaction Time -->
+    <div class="game-card reaction" id="card-reaction">
+      <div class="card-preview"><span class="icon">⚡</span></div>
+      <div class="card-body">
+        <div class="card-title">Reaction</div>
+        <div class="card-desc">Click the instant it turns green. How fast?</div>
+        <div class="card-best" id="best-reaction">Loading…</div>
+        <button class="play-btn" onclick="launchGame('reaction')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 15 Blackjack -->
+    <div class="game-card blackjack" id="card-blackjack">
+      <div class="card-preview"><span class="icon">🃏</span></div>
+      <div class="card-body">
+        <div class="card-title">Blackjack</div>
+        <div class="card-desc">Beat the dealer to 21 without going bust!</div>
+        <div class="card-best" id="best-blackjack">Loading…</div>
+        <button class="play-btn" onclick="launchGame('blackjack')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 16 Dice Poker -->
+    <div class="game-card dice" id="card-dice">
+      <div class="card-preview"><span class="icon">🎲</span></div>
+      <div class="card-body">
+        <div class="card-title">Dice Poker</div>
+        <div class="card-desc">Yahtzee-style dice — roll for combos!</div>
+        <div class="card-best" id="best-dice">Loading…</div>
+        <button class="play-btn" onclick="launchGame('dice')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 17 Target Shooter -->
+    <div class="game-card target" id="card-target">
+      <div class="card-preview"><span class="icon">🎯</span></div>
+      <div class="card-body">
+        <div class="card-title">Target Shoot</div>
+        <div class="card-desc">Tap shrinking targets before they vanish!</div>
+        <div class="card-best" id="best-target">Loading…</div>
+        <button class="play-btn" onclick="launchGame('target')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 18 Endless Runner -->
+    <div class="game-card runner" id="card-runner">
+      <div class="card-preview"><span class="icon">🏃</span></div>
+      <div class="card-body">
+        <div class="card-title">Runner</div>
+        <div class="card-desc">Jump and duck through infinite obstacles!</div>
+        <div class="card-best" id="best-runner">Loading…</div>
+        <button class="play-btn" onclick="launchGame('runner')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 19 Memory Match -->
+    <div class="game-card memory" id="card-memory">
+      <div class="card-preview"><span class="icon">🃏</span></div>
       <div class="card-body">
         <div class="card-title">Memory</div>
-        <div class="card-desc">Flip & match all pairs. Train your brain!</div>
+        <div class="card-desc">Flip and match all pairs. Train your brain!</div>
         <div class="card-best" id="best-memory">Loading…</div>
         <button class="play-btn" onclick="launchGame('memory')">▶ PLAY</button>
       </div>
     </div>
 
+    <!-- 20 Whack-a-Mole -->
+    <div class="game-card whack" id="card-whack">
+      <div class="card-preview"><span class="icon">🔨</span></div>
+      <div class="card-body">
+        <div class="card-title">Whack-a-Mole</div>
+        <div class="card-desc">Smash the moles before they disappear!</div>
+        <div class="card-best" id="best-whack">Loading…</div>
+        <button class="play-btn" onclick="launchGame('whack')">▶ PLAY</button>
+      </div>
+    </div>
+
+
+    <!-- 21 Pac-Man -->
+    <div class="game-card pacman" id="card-pacman">
+      <div class="card-preview"><span class="icon">🟡</span></div>
+      <div class="card-body">
+        <div class="card-title">Pac-Man</div>
+        <div class="card-desc">Chomp dots, dodge ghosts, eat power pellets!</div>
+        <div class="card-best" id="best-pacman">Loading…</div>
+        <button class="play-btn" onclick="launchGame('pacman')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 22 Crossy Road -->
+    <div class="game-card crossy" id="card-crossy">
+      <div class="card-preview"><span class="icon">🐸</span></div>
+      <div class="card-body">
+        <div class="card-title">Crossy Road</div>
+        <div class="card-desc">Hop across roads and rivers without dying!</div>
+        <div class="card-best" id="best-crossy">Loading…</div>
+        <button class="play-btn" onclick="launchGame('crossy')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 23 Bubble Shooter -->
+    <div class="game-card bubble" id="card-bubble">
+      <div class="card-preview"><span class="icon">🫧</span></div>
+      <div class="card-body">
+        <div class="card-title">Bubble Shooter</div>
+        <div class="card-desc">Aim and pop 3+ matching colored bubbles!</div>
+        <div class="card-best" id="best-bubble">Loading…</div>
+        <button class="play-btn" onclick="launchGame('bubble')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 24 Connect Four -->
+    <div class="game-card connect4" id="card-connect4">
+      <div class="card-preview"><span class="icon">🔴</span></div>
+      <div class="card-body">
+        <div class="card-title">Connect Four</div>
+        <div class="card-desc">Drop discs, get 4 in a row before the AI!</div>
+        <div class="card-best" id="best-connect4">Loading…</div>
+        <button class="play-btn" onclick="launchGame('connect4')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 25 Rhythm Tap -->
+    <div class="game-card rhythm" id="card-rhythm">
+      <div class="card-preview"><span class="icon">🎸</span></div>
+      <div class="card-body">
+        <div class="card-title">Rhythm Tap</div>
+        <div class="card-desc">Hit the falling notes to the beat — A S D F!</div>
+        <div class="card-best" id="best-rhythm">Loading…</div>
+        <button class="play-btn" onclick="launchGame('rhythm')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 26 Wordle -->
+    <div class="game-card wordle" id="card-wordle">
+      <div class="card-preview"><span class="icon">🟩</span></div>
+      <div class="card-body">
+        <div class="card-title">Wordle</div>
+        <div class="card-desc">Guess the 5-letter word in 6 tries!</div>
+        <div class="card-best" id="best-wordle">Loading…</div>
+        <button class="play-btn" onclick="launchGame('wordle')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 27 Galaga -->
+    <div class="game-card galaga" id="card-galaga">
+      <div class="card-preview"><span class="icon">🐲</span></div>
+      <div class="card-body">
+        <div class="card-title">Galaga</div>
+        <div class="card-desc">Blast alien formations in classic arcade style!</div>
+        <div class="card-best" id="best-galaga">Loading…</div>
+        <button class="play-btn" onclick="launchGame('galaga')">▶ PLAY</button>
+      </div>
+    </div>
+
+    <!-- 28 Mini Golf -->
+    <div class="game-card golf" id="card-golf">
+      <div class="card-preview"><span class="icon">⛳</span></div>
+      <div class="card-body">
+        <div class="card-title">Mini Golf</div>
+        <div class="card-desc">Drag to aim, release to putt — 9 holes!</div>
+        <div class="card-best" id="best-golf">Loading…</div>
+        <button class="play-btn" onclick="launchGame('golf')">▶ PLAY</button>
+      </div>
+    </div>
+
   </div>
 
-  <footer class="hub-footer">FAHH ARCADE &nbsp;•&nbsp; MADE WITH ❤️</footer>
+  <footer class="hub-footer">FAHH ARCADE &nbsp;•&nbsp; 28 GAMES &nbsp;•&nbsp; MADE WITH ❤️</footer>
 </div>
 
 <!-- ── FULL-SCREEN GAME OVERLAY ─────────────────────────────── -->
@@ -220,7 +445,7 @@
   <button class="back-btn" id="backBtn" onclick="exitGame()">← BACK</button>
 
   <!-- Flappy Fahh -->
-  <div id="flappy-container" style="display:none; position:relative;">
+  <div id="flappy-container" style="display:none;position:relative;">
     <div class="game-title-badge flappy">🐔 FLAPPY FAHH</div>
     <div class="canvas-wrapper flappy-wrapper">
       <canvas id="gameCanvas" width="460" height="580"></canvas>
@@ -240,19 +465,219 @@
     </div>
   </div>
 
+  <!-- Snake -->
+  <div id="snake-container" style="display:none;position:relative;">
+    <div class="game-title-badge snake">🐍 SNAKE</div>
+    <div class="canvas-wrapper">
+      <canvas id="snake-canvas" width="420" height="420"></canvas>
+    </div>
+  </div>
+
+  <!-- Tetris -->
+  <div id="tetris-container" style="display:none;position:relative;">
+    <div class="game-title-badge tetris">🧱 TETRIS</div>
+    <div class="canvas-wrapper">
+      <canvas id="tetris-canvas" width="280" height="560"></canvas>
+    </div>
+  </div>
+
+  <!-- Breakout -->
+  <div id="breakout-container" style="display:none;position:relative;">
+    <div class="game-title-badge breakout">🏏 BREAKOUT</div>
+    <div class="canvas-wrapper">
+      <canvas id="breakout-canvas" width="480" height="520"></canvas>
+    </div>
+  </div>
+
+  <!-- Space Invaders -->
+  <div id="invaders-container" style="display:none;position:relative;">
+    <div class="game-title-badge invaders">👾 SPACE INVADERS</div>
+    <div class="canvas-wrapper">
+      <canvas id="invaders-canvas" width="480" height="520"></canvas>
+    </div>
+  </div>
+
   <!-- Pong -->
-  <div id="pong-container" style="display:none; position:relative;">
+  <div id="pong-container" style="display:none;position:relative;">
     <div class="game-title-badge pong">🏓 PONG</div>
     <div class="canvas-wrapper pong-wrapper">
       <canvas id="pong-canvas" width="560" height="420"></canvas>
     </div>
   </div>
 
+  <!-- 2048 -->
+  <div id="g2048-container" style="display:none;position:relative;">
+    <div class="game-title-badge g2048">🔢 2048</div>
+    <div class="canvas-wrapper">
+      <canvas id="g2048-canvas" width="420" height="420"></canvas>
+    </div>
+  </div>
+
+  <!-- Minesweeper -->
+  <div id="mines-container" style="display:none;position:relative;">
+    <div class="game-title-badge mines">💣 MINESWEEPER</div>
+    <div class="canvas-wrapper">
+      <canvas id="mines-canvas" width="420" height="420"></canvas>
+    </div>
+  </div>
+
+  <!-- Simon Says -->
+  <div id="simon-container" style="display:none;position:relative;">
+    <div class="game-title-badge simon">🔴 SIMON SAYS</div>
+    <div class="canvas-wrapper">
+      <canvas id="simon-canvas" width="400" height="400"></canvas>
+    </div>
+  </div>
+
+  <!-- Sliding Puzzle -->
+  <div id="puzzle-container" style="display:none;position:relative;">
+    <div class="game-title-badge puzzle">🧩 15-PUZZLE</div>
+    <div class="canvas-wrapper">
+      <canvas id="puzzle-canvas" width="420" height="420"></canvas>
+    </div>
+  </div>
+
+  <!-- Asteroids -->
+  <div id="asteroids-container" style="display:none;position:relative;">
+    <div class="game-title-badge asteroids">☄️ ASTEROIDS</div>
+    <div class="canvas-wrapper">
+      <canvas id="asteroids-canvas" width="480" height="480"></canvas>
+    </div>
+  </div>
+
+  <!-- Typing Speed -->
+  <div id="typing-container" style="display:none;position:relative;">
+    <div class="game-title-badge typing">⌨️ TYPE RUSH</div>
+    <div class="canvas-wrapper">
+      <canvas id="typing-canvas" width="560" height="400"></canvas>
+    </div>
+  </div>
+
+  <!-- Color Flood -->
+  <div id="flood-container" style="display:none;position:relative;">
+    <div class="game-title-badge flood">🌊 COLOR FLOOD</div>
+    <div class="canvas-wrapper">
+      <canvas id="flood-canvas" width="420" height="460"></canvas>
+    </div>
+  </div>
+
+  <!-- Reaction Time -->
+  <div id="reaction-container" style="display:none;position:relative;">
+    <div class="game-title-badge reaction">⚡ REACTION TIME</div>
+    <div class="canvas-wrapper">
+      <canvas id="reaction-canvas" width="420" height="400"></canvas>
+    </div>
+  </div>
+
+  <!-- Blackjack -->
+  <div id="blackjack-container" style="display:none;position:relative;">
+    <div class="game-title-badge blackjack">🃏 BLACKJACK</div>
+    <div class="canvas-wrapper">
+      <canvas id="blackjack-canvas" width="520" height="480"></canvas>
+    </div>
+  </div>
+
+  <!-- Dice Poker -->
+  <div id="dice-container" style="display:none;position:relative;">
+    <div class="game-title-badge dice">🎲 DICE POKER</div>
+    <div class="canvas-wrapper">
+      <canvas id="dice-canvas" width="480" height="460"></canvas>
+    </div>
+  </div>
+
+  <!-- Target Shooter -->
+  <div id="target-container" style="display:none;position:relative;">
+    <div class="game-title-badge target">🎯 TARGET SHOOT</div>
+    <div class="canvas-wrapper">
+      <canvas id="target-canvas" width="480" height="480"></canvas>
+    </div>
+  </div>
+
+  <!-- Endless Runner -->
+  <div id="runner-container" style="display:none;position:relative;">
+    <div class="game-title-badge runner">🏃 RUNNER</div>
+    <div class="canvas-wrapper">
+      <canvas id="runner-canvas" width="560" height="300"></canvas>
+    </div>
+  </div>
+
   <!-- Memory Match -->
-  <div id="memory-container" style="display:none; position:relative;">
+  <div id="memory-container" style="display:none;position:relative;">
     <div class="game-title-badge memory">🃏 MEMORY MATCH</div>
     <div class="canvas-wrapper memory-wrapper">
       <canvas id="memory-canvas" width="420" height="500"></canvas>
+    </div>
+  </div>
+
+  <!-- Whack-a-Mole -->
+  <div id="whack-container" style="display:none;position:relative;">
+    <div class="game-title-badge whack">🔨 WHACK-A-MOLE</div>
+    <div class="canvas-wrapper">
+      <canvas id="mole-canvas" width="420" height="500"></canvas>
+    </div>
+  </div>
+
+  <!-- Pac-Man -->
+  <div id="pacman-container" style="display:none;position:relative;">
+    <div class="game-title-badge pacman">🟡 PAC-MAN</div>
+    <div class="canvas-wrapper">
+      <canvas id="pacman-canvas" width="420" height="420"></canvas>
+    </div>
+  </div>
+
+  <!-- Crossy Road -->
+  <div id="crossy-container" style="display:none;position:relative;">
+    <div class="game-title-badge crossy">🐸 CROSSY ROAD</div>
+    <div class="canvas-wrapper">
+      <canvas id="crossy-canvas" width="480" height="520"></canvas>
+    </div>
+  </div>
+
+  <!-- Bubble Shooter -->
+  <div id="bubble-container" style="display:none;position:relative;">
+    <div class="game-title-badge bubble">🫧 BUBBLE SHOOTER</div>
+    <div class="canvas-wrapper">
+      <canvas id="bubble-canvas" width="420" height="520"></canvas>
+    </div>
+  </div>
+
+  <!-- Connect Four -->
+  <div id="connect4-container" style="display:none;position:relative;">
+    <div class="game-title-badge connect4">🔴 CONNECT FOUR</div>
+    <div class="canvas-wrapper">
+      <canvas id="connect4-canvas" width="480" height="480"></canvas>
+    </div>
+  </div>
+
+  <!-- Rhythm Tap -->
+  <div id="rhythm-container" style="display:none;position:relative;">
+    <div class="game-title-badge rhythm">🎸 RHYTHM TAP</div>
+    <div class="canvas-wrapper">
+      <canvas id="rhythm-canvas" width="480" height="520"></canvas>
+    </div>
+  </div>
+
+  <!-- Wordle -->
+  <div id="wordle-container" style="display:none;position:relative;">
+    <div class="game-title-badge wordle">🟩 WORDLE</div>
+    <div class="canvas-wrapper">
+      <canvas id="wordle-canvas" width="420" height="520"></canvas>
+    </div>
+  </div>
+
+  <!-- Galaga -->
+  <div id="galaga-container" style="display:none;position:relative;">
+    <div class="game-title-badge galaga">🐲 GALAGA</div>
+    <div class="canvas-wrapper">
+      <canvas id="galaga-canvas" width="480" height="520"></canvas>
+    </div>
+  </div>
+
+  <!-- Mini Golf -->
+  <div id="golf-container" style="display:none;position:relative;">
+    <div class="game-title-badge golf">⛳ MINI GOLF</div>
+    <div class="canvas-wrapper">
+      <canvas id="golf-canvas" width="480" height="520"></canvas>
     </div>
   </div>
 
@@ -262,6 +687,31 @@
 <script src="game.js"></script>
 <script src="pong.js"></script>
 <script src="memory.js"></script>
+<script src="whackamole.js"></script>
+<script src="snake.js"></script>
+<script src="tetris.js"></script>
+<script src="breakout.js"></script>
+<script src="spaceinvaders.js"></script>
+<script src="game2048.js"></script>
+<script src="minesweeper.js"></script>
+<script src="simon.js"></script>
+<script src="slidingpuzzle.js"></script>
+<script src="asteroids.js"></script>
+<script src="typingspeed.js"></script>
+<script src="colorflood.js"></script>
+<script src="reactiontime.js"></script>
+<script src="blackjack.js"></script>
+<script src="dicepoker.js"></script>
+<script src="targetshooter.js"></script>
+<script src="endlessrunner.js"></script>
+<script src="pacman.js"></script>
+<script src="crossyroad.js"></script>
+<script src="bubbleshooter.js"></script>
+<script src="connectfour.js"></script>
+<script src="rhythmtap.js"></script>
+<script src="wordle.js"></script>
+<script src="galaga.js"></script>
+<script src="minigolf.js"></script>
 
 <script>
 "use strict";
@@ -269,122 +719,194 @@
 // ── Starfield generation ─────────────────────────────────────
 (function buildStarfield() {
   const sf = document.getElementById("starfield");
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 160; i++) {
     const s = document.createElement("div");
     s.className = "star";
     const size = Math.random() * 2.5 + 0.5;
     s.style.cssText = `
-      width: ${size}px; height: ${size}px;
-      top: ${Math.random() * 100}%;
-      left: ${Math.random() * 100}%;
-      --d: ${(Math.random() * 4 + 2).toFixed(1)}s;
-      --delay: -${(Math.random() * 5).toFixed(1)}s;
+      width:${size}px;height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --d:${(Math.random()*4+2).toFixed(1)}s;
+      --delay:-${(Math.random()*5).toFixed(1)}s;
     `;
     sf.appendChild(s);
   }
 })();
 
-// ── Best score display ──────────────────────────────────────
+// ── Best score display ────────────────────────────────────────
+const BEST_MAP = {
+  flappy:    { key:"flappy_best",     fmt: v => `🏆 Best: <span>${v}</span>` },
+  snake:     { key:"snake_best",      fmt: v => `🏆 Best: <span>${v}</span>` },
+  tetris:    { key:"tetris_best",     fmt: v => `🏆 Best: <span>${v}</span>` },
+  breakout:  { key:"breakout_best",   fmt: v => `🏆 Best: <span>${v}</span>` },
+  invaders:  { key:"invaders_best",   fmt: v => `🏆 Best: <span>${v}</span>` },
+  pong:      { key:"pong_best",       fmt: v => `🏆 Best win: <span>${v} pts</span>` },
+  g2048:     { key:"g2048_best",      fmt: v => `🏆 Best: <span>${v}</span>` },
+  mines:     { key:"mines_best",      fmt: v => `🏆 Best: <span>${v}s</span>` },
+  simon:     { key:"simon_best",      fmt: v => `🏆 Best: <span>${v} rounds</span>` },
+  puzzle:    { key:"puzzle_best",     fmt: v => `🏆 Best: <span>${v} moves</span>` },
+  asteroids: { key:"asteroids_best",  fmt: v => `🏆 Best: <span>${v}</span>` },
+  typing:    { key:"typing_best",     fmt: v => `🏆 Best: <span>${v} WPM</span>` },
+  flood:     { key:"flood_best",      fmt: v => `🏆 Best: <span>${v} moves</span>` },
+  reaction:  { key:"reaction_best",   fmt: v => `🏆 Best avg: <span>${v}ms</span>` },
+  blackjack: { key:"blackjack_chips", fmt: v => `💰 Chips: <span>${v}</span>` },
+  dice:      { key:"dice_best",       fmt: v => `🏆 Best: <span>${v}</span>` },
+  target:    { key:"target_best",     fmt: v => `🏆 Best: <span>${v}</span>` },
+  runner:    { key:"runner_best",     fmt: v => `🏆 Best: <span>${v}</span>` },
+  memory:    { key:"memory_best",     fmt: v => `🏆 Best: <span>${JSON.parse(v).moves} moves</span>` },
+  whack:     { key:"whackamole_best", fmt: v => `🏆 Best: <span>${v}</span>` },
+  pacman:    { key:"pacman_best",     fmt: v => `🏆 Best: <span>${v}</span>` },
+  crossy:    { key:"crossy_best",     fmt: v => `🏆 Best: <span>${v} hops</span>` },
+  bubble:    { key:"bubble_best",     fmt: v => `🏆 Best: <span>${v}</span>` },
+  connect4:  { key:"connectfour_wins",fmt: v => `🏆 Wins: <span>${v}</span>` },
+  rhythm:    { key:"rhythm_best",     fmt: v => `🏆 Best: <span>${v}</span>` },
+  wordle:    { key:"wordle_wins",     fmt: v => `🏆 Wins: <span>${v}</span>` },
+  galaga:    { key:"galaga_best",     fmt: v => `🏆 Best: <span>${v}</span>` },
+  golf:      { key:"golf_best",       fmt: v => `🏆 Best: <span>${v} strokes</span>` },
+};
+
 function updateBestScores() {
-  // Flappy
-  const fb = parseInt(localStorage.getItem("flappy_best") || "0");
-  document.getElementById("best-flappy").innerHTML =
-    fb > 0 ? `🏆 Best: <span>${fb}</span>` : "No score yet";
-
-  // Pong
-  const pb = parseInt(localStorage.getItem("pong_best") || "0");
-  document.getElementById("best-pong").innerHTML =
-    pb > 0 ? `🏆 Best win: <span>${pb} pts</span>` : "No score yet";
-
-  // Memory
-  const mb = JSON.parse(localStorage.getItem("memory_best") || "null");
-  document.getElementById("best-memory").innerHTML =
-    mb ? `🏆 Best: <span>${mb.moves} moves / ${mb.secs}s</span>` : "No score yet";
+  for (const [id, cfg] of Object.entries(BEST_MAP)) {
+    const el = document.getElementById(`best-${id}`);
+    if (!el) continue;
+    const raw = localStorage.getItem(cfg.key);
+    if (raw && raw !== "0" && raw !== "null") {
+      try { el.innerHTML = cfg.fmt(raw); }
+      catch { el.innerHTML = "No score yet"; }
+    } else {
+      el.innerHTML = "No score yet";
+    }
+  }
 }
 updateBestScores();
 
-// ── Game launcher ────────────────────────────────────────────
+// ── Game launcher ─────────────────────────────────────────────
 let activeGame = null;
 
-function launchGame(id) {
-  // Hide hub, show overlay
-  document.getElementById("hub").style.display = "none";
-  const screen = document.getElementById("gameOverlayScreen");
-  screen.classList.add("active");
+// All game container IDs
+const ALL_CONTAINERS = [
+  "flappy","snake","tetris","breakout","invaders","pong",
+  "g2048","mines","simon","puzzle","asteroids","typing",
+  "flood","reaction","blackjack","dice","target","runner",
+  "memory","whack","pacman","crossy","bubble","connect4",
+  "rhythm","wordle","galaga","golf"
+];
 
-  // Hide all game containers
-  document.getElementById("flappy-container").style.display = "none";
-  document.getElementById("pong-container").style.display   = "none";
-  document.getElementById("memory-container").style.display = "none";
+// Map game id -> { containerId, init fn }
+const GAME_REGISTRY = {
+  flappy:    { container:"flappy-container",    init: () => { document.getElementById("flappy-hud").classList.add("active"); if(typeof flappyAnimId!=="undefined"&&flappyAnimId){cancelAnimationFrame(flappyAnimId);flappyAnimId=null;} showStartScreen(); updateGravityIndicator(); loop(); } },
+  snake:     { container:"snake-container",     init: () => SnakeGame.init("snake-canvas") },
+  tetris:    { container:"tetris-container",    init: () => TetrisGame.init("tetris-canvas") },
+  breakout:  { container:"breakout-container",  init: () => BreakoutGame.init("breakout-canvas") },
+  invaders:  { container:"invaders-container",  init: () => SpaceInvadersGame.init("invaders-canvas") },
+  pong:      { container:"pong-container",      init: () => PongGame.init(document.getElementById("pong-canvas")) },
+  g2048:     { container:"g2048-container",     init: () => Game2048.init("g2048-canvas") },
+  mines:     { container:"mines-container",     init: () => MinesweeperGame.init("mines-canvas") },
+  simon:     { container:"simon-container",     init: () => SimonGame.init("simon-canvas") },
+  puzzle:    { container:"puzzle-container",    init: () => SlidingPuzzleGame.init("puzzle-canvas") },
+  asteroids: { container:"asteroids-container", init: () => AsteroidsGame.init("asteroids-canvas") },
+  typing:    { container:"typing-container",    init: () => TypingSpeedGame.init("typing-canvas") },
+  flood:     { container:"flood-container",     init: () => ColorFloodGame.init("flood-canvas") },
+  reaction:  { container:"reaction-container",  init: () => ReactionTimeGame.init("reaction-canvas") },
+  blackjack: { container:"blackjack-container", init: () => BlackjackGame.init("blackjack-canvas") },
+  dice:      { container:"dice-container",      init: () => DicePokerGame.init("dice-canvas") },
+  target:    { container:"target-container",    init: () => TargetShooterGame.init("target-canvas") },
+  runner:    { container:"runner-container",    init: () => EndlessRunnerGame.init("runner-canvas") },
+  memory:    { container:"memory-container",    init: () => MemoryGame.init(document.getElementById("memory-canvas")) },
+  whack:     { container:"whack-container",     init: () => WhackAMoleGame.init("mole-canvas") },
+  pacman:    { container:"pacman-container",    init: () => PacManGame.init("pacman-canvas") },
+  crossy:    { container:"crossy-container",   init: () => CrossyRoadGame.init("crossy-canvas") },
+  bubble:    { container:"bubble-container",   init: () => BubbleShooterGame.init("bubble-canvas") },
+  connect4:  { container:"connect4-container", init: () => ConnectFourGame.init("connect4-canvas") },
+  rhythm:    { container:"rhythm-container",   init: () => RhythmTapGame.init("rhythm-canvas") },
+  wordle:    { container:"wordle-container",   init: () => WordleGame.init("wordle-canvas") },
+  galaga:    { container:"galaga-container",   init: () => GalagaGame.init("galaga-canvas") },
+  golf:      { container:"golf-container",     init: () => MiniGolfGame.init("golf-canvas") },
+};
+
+// Destroy helpers for each game
+const GAME_DESTROY = {
+  flappy:    () => { if(typeof flappyAnimId!=="undefined"&&flappyAnimId){cancelAnimationFrame(flappyAnimId);flappyAnimId=null;} document.getElementById("flappy-hud").classList.remove("active"); },
+  snake:     () => { if(typeof SnakeGame!=="undefined") SnakeGame.destroy(); },
+  tetris:    () => { if(typeof TetrisGame!=="undefined") TetrisGame.destroy(); },
+  breakout:  () => { if(typeof BreakoutGame!=="undefined") BreakoutGame.destroy(); },
+  invaders:  () => { if(typeof SpaceInvadersGame!=="undefined") SpaceInvadersGame.destroy(); },
+  pong:      () => { if(typeof PongGame!=="undefined") PongGame.destroy(); },
+  g2048:     () => { if(typeof Game2048!=="undefined") Game2048.destroy(); },
+  mines:     () => { if(typeof MinesweeperGame!=="undefined") MinesweeperGame.destroy(); },
+  simon:     () => { if(typeof SimonGame!=="undefined") SimonGame.destroy(); },
+  puzzle:    () => { if(typeof SlidingPuzzleGame!=="undefined") SlidingPuzzleGame.destroy(); },
+  asteroids: () => { if(typeof AsteroidsGame!=="undefined") AsteroidsGame.destroy(); },
+  typing:    () => { if(typeof TypingSpeedGame!=="undefined") TypingSpeedGame.destroy(); },
+  flood:     () => { if(typeof ColorFloodGame!=="undefined") ColorFloodGame.destroy(); },
+  reaction:  () => { if(typeof ReactionTimeGame!=="undefined") ReactionTimeGame.destroy(); },
+  blackjack: () => { if(typeof BlackjackGame!=="undefined") BlackjackGame.destroy(); },
+  dice:      () => { if(typeof DicePokerGame!=="undefined") DicePokerGame.destroy(); },
+  target:    () => { if(typeof TargetShooterGame!=="undefined") TargetShooterGame.destroy(); },
+  runner:    () => { if(typeof EndlessRunnerGame!=="undefined") EndlessRunnerGame.destroy(); },
+  memory:    () => { if(typeof MemoryGame!=="undefined") MemoryGame.destroy(); },
+  whack:     () => { if(typeof WhackAMoleGame!=="undefined") WhackAMoleGame.destroy(); },
+  pacman:    () => { if(typeof PacManGame!=="undefined") PacManGame.destroy(); },
+  crossy:    () => { if(typeof CrossyRoadGame!=="undefined") CrossyRoadGame.destroy(); },
+  bubble:    () => { if(typeof BubbleShooterGame!=="undefined") BubbleShooterGame.destroy(); },
+  connect4:  () => { if(typeof ConnectFourGame!=="undefined") ConnectFourGame.destroy(); },
+  rhythm:    () => { if(typeof RhythmTapGame!=="undefined") RhythmTapGame.destroy(); },
+  wordle:    () => { if(typeof WordleGame!=="undefined") WordleGame.destroy(); },
+  galaga:    () => { if(typeof GalagaGame!=="undefined") GalagaGame.destroy(); },
+  golf:      () => { if(typeof MiniGolfGame!=="undefined") MiniGolfGame.destroy(); },
+};
+
+function launchGame(id) {
+  document.getElementById("hub").style.display = "none";
+  document.getElementById("gameOverlayScreen").classList.add("active");
+
+  // Hide all containers
+  ALL_CONTAINERS.forEach(gid => {
+    const c = document.getElementById(gid + "-container");
+    if (c) c.style.display = "none";
+  });
 
   activeGame = id;
+  const reg = GAME_REGISTRY[id];
+  if (!reg) return;
 
-  if (id === "flappy") {
-    document.getElementById("flappy-container").style.display = "";
-    document.getElementById("flappy-hud").classList.add("active");
-    // Cancel any previous loop then restart
-    if (typeof flappyAnimId !== "undefined" && flappyAnimId) {
-      cancelAnimationFrame(flappyAnimId);
-      flappyAnimId = null;
-    }
-    showStartScreen();
-    updateGravityIndicator();
-    loop();
-  } else if (id === "pong") {
-    document.getElementById("pong-container").style.display = "";
-    PongGame.init(document.getElementById("pong-canvas"));
-  } else if (id === "memory") {
-    document.getElementById("memory-container").style.display = "";
-    MemoryGame.init(document.getElementById("memory-canvas"));
-  }
+  document.getElementById(reg.container).style.display = "";
+  try { reg.init(); } catch(e) { console.error("Game init error:", e); }
 }
 
 function exitGame() {
-  // Stop running games
-  if (activeGame === "pong")   PongGame.destroy();
-  if (activeGame === "memory") MemoryGame.destroy();
-  if (activeGame === "flappy") {
-    // Cancel flappy's animation loop
-    if (typeof flappyAnimId !== "undefined" && flappyAnimId) {
-      cancelAnimationFrame(flappyAnimId);
-      flappyAnimId = null;
-    }
-    document.getElementById("flappy-hud").classList.remove("active");
+  if (activeGame && GAME_DESTROY[activeGame]) {
+    try { GAME_DESTROY[activeGame](); } catch(e) {}
   }
   activeGame = null;
 
-  // Hide overlay, show hub
-  const screen = document.getElementById("gameOverlayScreen");
-  screen.classList.remove("active");
+  document.getElementById("gameOverlayScreen").classList.remove("active");
   document.getElementById("hub").style.display = "";
-
-  // Refresh best scores
   updateBestScores();
 }
 
-// Hook Flappy Fahh best-score save into the existing game.js logic
-// game.js calls showDeadScreen() which updates bestScore variable
-// We intercept that via a MutationObserver on overlayBest text
-(function patchFlappyBestScore() {
-  const ob = new MutationObserver(() => {
-    // bestScore is a global in game.js
-    if (typeof bestScore !== "undefined" && bestScore > 0) {
-      const stored = parseInt(localStorage.getItem("flappy_best") || "0");
-      if (bestScore > stored) localStorage.setItem("flappy_best", bestScore);
-    }
-  });
-  ob.observe(document.getElementById("overlayBest"), { childList: true, subtree: true, characterData: true });
-})();
-
-// Clicking anywhere on the card (outside the play button) also launches it
+// Clicking the card body also launches
 document.querySelectorAll(".game-card").forEach(card => {
   card.addEventListener("click", e => {
-    // play-btn already has its own onclick — don't double-fire
     if (e.target.tagName === "BUTTON") return;
     const id = card.id.replace("card-", "");
     launchGame(id);
   });
 });
+
+// Hook Flappy best score via MutationObserver
+(function patchFlappyBestScore() {
+  const el = document.getElementById("overlayBest");
+  if (!el) return;
+  const ob = new MutationObserver(() => {
+    if (typeof bestScore !== "undefined" && bestScore > 0) {
+      const stored = parseInt(localStorage.getItem("flappy_best") || "0");
+      if (bestScore > stored) localStorage.setItem("flappy_best", bestScore);
+    }
+  });
+  ob.observe(el, { childList:true, subtree:true, characterData:true });
+})();
 </script>
 </body>
 </html>
