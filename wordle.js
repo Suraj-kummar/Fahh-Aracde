@@ -887,3 +887,5 @@ const WordleGame = (() => {
 
   return { init, destroy };
 })();
+
+// arcade-hub: keyboard registered
