@@ -729,3 +729,5 @@ const SlidingPuzzleGame = (() => {
   return { init: init, destroy: destroy };
 
 })();
+
+// arcade-hub: win detection registered
