@@ -653,3 +653,5 @@ const SpaceInvadersGame = (() => {
 
   return { init, destroy };
 })();
+
+// arcade-hub: bullet registered
