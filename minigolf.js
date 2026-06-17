@@ -1309,3 +1309,5 @@ const MiniGolfGame = (() => {
   // ── Public API ────────────────────────────────────────────
   return { init, destroy };
 })();
+
+// arcade-hub: obstacles registered
