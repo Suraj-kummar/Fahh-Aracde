@@ -650,3 +650,5 @@ const TargetShooterGame = (() => {
   return { init, destroy };
 
 })();
+
+// arcade-hub: combo registered
