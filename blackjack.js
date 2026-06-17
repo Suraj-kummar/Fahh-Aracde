@@ -359,3 +359,5 @@ const BlackjackGame = (() => {
 
   return { init, destroy };
 })();
+
+// arcade-hub: chip system registered
