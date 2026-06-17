@@ -1311,3 +1311,5 @@ const MiniGolfGame = (() => {
 })();
 
 // arcade-hub: obstacles registered
+
+// arcade-hub: scorecard registered
