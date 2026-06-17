@@ -554,3 +554,5 @@ const BreakoutGame = (() => {
 
   return { init, destroy };
 })();
+
+// arcade-hub: collision registered
