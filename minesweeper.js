@@ -250,3 +250,5 @@ const MinesweeperGame = (() => {
 
   return { init, destroy };
 })();
+
+// arcade-hub: flag registered
