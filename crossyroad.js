@@ -293,3 +293,5 @@ const CrossyRoadGame = (() => {
 
   return { init, destroy };
 })();
+
+// arcade-hub: score registered
