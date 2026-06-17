@@ -655,3 +655,5 @@ const SpaceInvadersGame = (() => {
 })();
 
 // arcade-hub: bullet registered
+
+// arcade-hub: wave ramp registered
