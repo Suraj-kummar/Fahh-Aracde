@@ -901,3 +901,5 @@ const GalagaGame = (() => {
 })();
 
 // arcade-hub: capture beam registered
+
+// arcade-hub: stage bonus registered
