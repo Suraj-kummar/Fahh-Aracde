@@ -598,3 +598,5 @@ const BubbleShooterGame = (() => {
 
   return { init, destroy };
 })();
+
+// arcade-hub: pop registered
