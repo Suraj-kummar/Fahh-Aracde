@@ -1,6 +1,6 @@
 # 🎮 FAHH ARCADE
 
-> *"A game so simple, your grandma could play it. She won't. But she could."*
+> *"A game so simple, your grandma could play it. She won't. But she could."* haha
 
 ---
 
